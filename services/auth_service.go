@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/Twisac-Solutions/tours-backend/blacklist"
 )
 
 // AuthResponse represents the response returned after authentication actions.
@@ -143,3 +144,48 @@ func GoogleSSO(c *fiber.Ctx) error {
 		Message: "Google SSO not implemented",
 	})
 }
+
+// Logout godoc
+// @Summary Logout a user
+// @Description Invalidate the current JWT token by blacklisting it
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} AuthResponse
+// @Failure 401 {object} AuthResponse
+// @Router /api/logout [post]
+func Logout(c *fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(AuthResponse{
+			Status:  "error",
+			Message: "Missing Authorization header",
+		})
+	}
+
+	// Extract token from "Bearer <token>"
+	var token string
+	if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
+		token = authHeader[7:]
+	} else {
+		token = authHeader
+	}
+
+	// Optionally, parse the token to get its expiry (for now, use a default expiry)
+	expiry := time.Now().Add(24 * time.Hour) // Set to 24h for demonstration
+
+	// Use a package-level blacklist instance (should be initialized in main or as a singleton)
+	if globalBlacklist == nil {
+		globalBlacklist = blacklist.NewBlacklist()
+	}
+	globalBlacklist.Add(token, expiry)
+
+	return c.JSON(AuthResponse{
+		Status:  "success",
+		Message: "Successfully logged out",
+	})
+}
+
+// globalBlacklist is a package-level variable for demonstration.
+// In production, use a better-scoped or persistent solution.
+var globalBlacklist *blacklist.Blacklist
