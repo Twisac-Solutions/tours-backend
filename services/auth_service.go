@@ -3,13 +3,14 @@ package services
 import (
 	"time"
 
+	"github.com/Twisac-Solutions/tours-backend/blacklist"
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/Twisac-Solutions/tours-backend/blacklist"
 )
 
 // AuthResponse represents the response returned after authentication actions.
@@ -127,22 +128,52 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
-// GoogleSSO godoc
-// @Summary Google Single Sign-On
-// @Description Authenticate a user using Google SSO
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Success 200 {object} AuthResponse
-// @Failure 400 {object} AuthResponse
-// @Failure 500 {object} AuthResponse
-// @Router /api/google-sso [get]
-func GoogleSSO(c *fiber.Ctx) error {
-	// Dummy Google login logic placeholder
-	return c.JSON(AuthResponse{
-		Status:  "success",
-		Message: "Google SSO not implemented",
-	})
+func generateJWT(userID uuid.UUID) (string, error) {
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"exp":     time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.JWTSecret))
+}
+
+func GoogleLogin(c *fiber.Ctx) error {
+	url := utils.GetGoogleOAuthURL()
+	return c.Redirect(url, fiber.StatusTemporaryRedirect)
+}
+
+// GoogleCallback handles the callback from Google OAuth.
+func GoogleCallback(c *fiber.Ctx) error {
+	code := c.Query("code")
+	if code == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Code not found"})
+	}
+
+	// Exchange the code for an access token and fetch user info.
+	userInfo, err := utils.GetGoogleUserInfo(code)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	// Check if a user with this email exists.
+	var user models.User
+	if err := database.DB.Where("email = ?", userInfo.Email).First(&user).Error; err != nil {
+		// If not, create a new user with auto‑generated username.
+		username := utils.GenerateUsername(userInfo.Name)
+		user = models.User{
+			Email:    userInfo.Email,
+			Name:     userInfo.Name,
+			Username: username,
+		}
+		database.DB.Create(&user)
+	}
+
+	token, err := generateJWT(user.ID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not create token"})
+	}
+
+	return c.JSON(fiber.Map{"token": token, "user": user})
 }
 
 // Logout godoc
