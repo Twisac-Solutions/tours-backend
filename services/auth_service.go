@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Twisac-Solutions/tours-backend/blacklist"
+	"github.com/Twisac-Solutions/tours-backend/config"
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/Twisac-Solutions/tours-backend/utils"

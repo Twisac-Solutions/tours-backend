@@ -17,7 +17,7 @@ import (
 // @host localhost:8000
 // @BasePath /
 func main() {
-	config.LoadEnv()
+	config.InitConfig()
 	database.ConnectDB()
 
 	app := fiber.New()
