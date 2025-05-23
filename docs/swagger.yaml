@@ -14,6 +14,13 @@ definitions:
         - $ref: '#/definitions/services.UserResponse'
         description: User is optional
     type: object
+  services.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   services.RegisterInput:
     properties:
       email:
@@ -100,18 +107,37 @@ paths:
       summary: Login a user
       tags:
       - Auth
+  /api/logout:
+    post:
+      consumes:
+      - application/json
+      description: Invalidate the current JWT token by blacklisting it
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+      summary: Logout a user
+      tags:
+      - Auth
   /api/register:
     post:
       consumes:
       - application/json
       description: Create a new user account with auto-generated username
       parameters:
-      - description: Register Input
+      - description: Login Input
         in: body
-        name: registerInput
+        name: loginInput
         required: true
         schema:
-          $ref: '#/definitions/services.RegisterInput'
+          $ref: '#/definitions/services.LoginInput'
       produces:
       - application/json
       responses:
