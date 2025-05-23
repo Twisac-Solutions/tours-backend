@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"github.com/Twisac-Solutions/tours-backend/services"
 	"github.com/gofiber/fiber/v2"
-	"github.com/your-username/tout-api/services"
 )
 
 func GetUserProfile(c *fiber.Ctx) error {

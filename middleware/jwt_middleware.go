@@ -1,8 +1,8 @@
 package middlewares
 
 import (
+	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
-	"github.com/your-username/tout-api/utils"
 )
 
 func JWTProtected() fiber.Handler {

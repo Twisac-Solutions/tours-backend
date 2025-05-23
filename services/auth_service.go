@@ -3,11 +3,11 @@ package services
 import (
 	"time"
 
+	"github.com/Twisac-Solutions/tours-backend/database"
+	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/your-username/tout-api/database"
-	"github.com/your-username/tout-api/models"
-	"github.com/your-username/tout-api/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 

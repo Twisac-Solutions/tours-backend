@@ -1,9 +1,9 @@
 package services
 
 import (
+	"github.com/Twisac-Solutions/tours-backend/database"
+	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/gofiber/fiber/v2"
-	"github.com/your-username/tout-api/database"
-	"github.com/your-username/tout-api/models"
 )
 
 func GetUserProfile(c *fiber.Ctx) error {
