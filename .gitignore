@@ -17,6 +17,7 @@
 .DS_Store
 .idea
 .db
+*.db
 
 # Misc
 *.fiber.gz

@@ -6,10 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Media struct {
-	URL          string `json:"url"`
-	ThumbnailURL string `json:"thumbnailUrl"`
-}
+
 
 type Category struct {
 	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`

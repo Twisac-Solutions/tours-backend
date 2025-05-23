@@ -32,7 +32,7 @@ type User struct {
 	Language        string       `json:"language"`
 	Timezone        string       `json:"timezone"`
 	IsVerified      bool         `json:"isVerified"`
-	EmailVerifiedAt *time.Time   `json:"emailVerifiedAt"`
+	EmailVerifiedAt time.Time    `json:"emailVerifiedAt"`
 	SocialLinks     SocialLinks  `gorm:"embedded" json:"socialLinks"`
 	CreatedAt       time.Time    `json:"createdAt"`
 	UpdatedAt       time.Time    `json:"updatedAt"`
