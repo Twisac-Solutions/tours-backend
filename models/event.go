@@ -13,7 +13,7 @@ type ScheduleItem struct {
 }
 
 type Event struct {
-	ID            uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	ID            uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
 	Title         string    `json:"title"`
 	Slug          string    `gorm:"uniqueIndex" json:"slug"`
 	DestinationID uuid.UUID `json:"destinationId"`

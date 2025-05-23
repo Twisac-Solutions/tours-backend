@@ -18,7 +18,7 @@ type SocialLinks struct {
 }
 
 type User struct {
-	ID              uuid.UUID    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	ID              uuid.UUID    `gorm:"type:text;primaryKey" json:"id"`
 	Name            string       `json:"name"`
 	Username        string       `gorm:"uniqueIndex" json:"username"`
 	Email           string       `gorm:"uniqueIndex" json:"email"`

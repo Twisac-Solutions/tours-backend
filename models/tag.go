@@ -7,7 +7,7 @@ import (
 )
 
 type Tag struct {
-	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	ID          uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
 	Name        string    `json:"name"`
 	Slug        string    `gorm:"uniqueIndex" json:"slug"`
 	Description string    `json:"description"`

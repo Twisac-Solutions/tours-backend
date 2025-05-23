@@ -7,7 +7,7 @@ import (
 )
 
 type Review struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	ID        uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
 	UserID    uuid.UUID `json:"userId"`
 	PackageID uuid.UUID `json:"packageId"` // Refers to either a Tour or an Event
 	Rating    int       `json:"rating"`    // 1 to 5
