@@ -189,35 +189,54 @@ func GoogleCallback(c *fiber.Ctx) error {
 func Logout(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(AuthResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
 			Status:  "error",
-			Message: "Missing Authorization header",
+			Message: "Authorization header not found",
 		})
 	}
 
-	// Extract token from "Bearer <token>"
-	var token string
-	if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
-		token = authHeader[7:]
-	} else {
-		token = authHeader
+	// Expect token in format "Bearer <token>"
+	const bearerPrefix = "Bearer "
+	if len(authHeader) <= len(bearerPrefix) || authHeader[:len(bearerPrefix)] != bearerPrefix {
+		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
+			Status:  "error",
+			Message: "Invalid authorization header",
+		})
+	}
+	tokenStr := authHeader[len(bearerPrefix):]
+
+	// Parse token to extract expiration (using the same secret).
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.JWTSecret), nil
+	})
+	if err != nil || !token.Valid {
+		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
+			Status:  "error",
+			Message: "Invalid token",
+		})
 	}
 
-	// Optionally, parse the token to get its expiry (for now, use a default expiry)
-	expiry := time.Now().Add(24 * time.Hour) // Set to 24h for demonstration
-
-	// Use a package-level blacklist instance (should be initialized in main or as a singleton)
-	if globalBlacklist == nil {
-		globalBlacklist = blacklist.NewBlacklist()
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
+			Status:  "error",
+			Message: "Invalid token claims",
+		})
 	}
-	globalBlacklist.Add(token, expiry)
+	expFloat, ok := claims["exp"].(float64)
+	if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
+			Status:  "error",
+			Message: "Invalid expiration time",
+		})
+	}
+	expirationTime := time.Unix(int64(expFloat), 0)
+
+	// Add token to blacklist.
+	blacklist.Add(tokenStr, expirationTime)
 
 	return c.JSON(AuthResponse{
 		Status:  "success",
-		Message: "Successfully logged out",
+		Message: "Logout successful",
 	})
 }
-
-// globalBlacklist is a package-level variable for demonstration.
-// In production, use a better-scoped or persistent solution.
-var globalBlacklist *blacklist.Blacklist

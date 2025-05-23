@@ -5,52 +5,37 @@ import (
 	"time"
 )
 
-// Blacklist manages blacklisted JWT tokens.
-type Blacklist struct {
-	mu     sync.RWMutex
-	tokens map[string]time.Time // token string -> expiry time
+type TokenInfo struct {
+	Expiration time.Time
 }
 
-// NewBlacklist creates a new Blacklist instance.
-func NewBlacklist() *Blacklist {
-	return &Blacklist{
-		tokens: make(map[string]time.Time),
-	}
+var (
+	tokens = make(map[string]TokenInfo)
+	mutex  sync.RWMutex
+)
+
+// Add adds a token to the blacklist with its expiration time.
+func Add(token string, expiration time.Time) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	tokens[token] = TokenInfo{Expiration: expiration}
 }
 
-// Add adds a token to the blacklist until its expiry.
-func (b *Blacklist) Add(token string, expiry time.Time) {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	b.tokens[token] = expiry
-}
-
-// IsBlacklisted checks if a token is blacklisted and not yet expired.
-func (b *Blacklist) IsBlacklisted(token string) bool {
-	b.mu.RLock()
-	expiry, exists := b.tokens[token]
-	b.mu.RUnlock()
+// IsBlacklisted checks if a token is in the blacklist.
+// It also cleans up expired tokens.
+func IsBlacklisted(token string) bool {
+	mutex.RLock()
+	info, exists := tokens[token]
+	mutex.RUnlock()
 	if !exists {
 		return false
 	}
-	// Remove expired tokens
-	if time.Now().After(expiry) {
-		b.mu.Lock()
-		delete(b.tokens, token)
-		b.mu.Unlock()
+	if time.Now().After(info.Expiration) {
+		// Remove expired token.
+		mutex.Lock()
+		delete(tokens, token)
+		mutex.Unlock()
 		return false
 	}
 	return true
-}
-
-// Cleanup removes expired tokens from the blacklist.
-func (b *Blacklist) Cleanup() {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	now := time.Now()
-	for token, expiry := range b.tokens {
-		if now.After(expiry) {
-			delete(b.tokens, token)
-		}
-	}
 }
