@@ -14,7 +14,11 @@ func Login(c *fiber.Ctx) error {
 }
 
 func GoogleSSO(c *fiber.Ctx) error {
-	return services.GoogleSSO(c)
+	return services.GoogleLogin(c)
+}
+
+func GoogleCallback(c *fiber.Ctx) error {
+	return services.GoogleCallback(c)
 }
 
 func Logout(c *fiber.Ctx) error {
