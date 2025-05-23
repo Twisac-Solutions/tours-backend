@@ -17,6 +17,7 @@ type Event struct {
 	Title         string         `json:"title"`
 	Slug          string         `gorm:"uniqueIndex" json:"slug"`
 	DestinationID uuid.UUID      `json:"destinationId"`
+	CategoryID    uuid.UUID      `json:"categoryId"`
 	ShortDesc     string         `json:"shortDescription"`
 	FullDesc      string         `json:"fullDescription"`
 	EventDate     time.Time      `json:"eventDate"`

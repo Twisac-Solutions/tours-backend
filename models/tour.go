@@ -23,6 +23,7 @@ type Tour struct {
 	Title          string         `json:"title"`
 	Slug           string         `gorm:"uniqueIndex" json:"slug"`
 	DestinationID  uuid.UUID      `json:"destinationId"`
+	CategoryID     uuid.UUID      `json:"categoryId"`
 	ShortDesc      string         `json:"shortDescription"`
 	FullDesc       string         `json:"fullDescription"`
 	DurationDays   int            `json:"durationDays"`
@@ -36,8 +37,8 @@ type Tour struct {
 	Inclusions     pq.StringArray `gorm:"type:text[]" json:"inclusions"`
 	Exclusions     pq.StringArray `gorm:"type:text[]" json:"exclusions"`
 	CoverImage     Media          `gorm:"embedded" json:"coverImage"`
-	Gallery        pq.StringArray `gorm:"type:text[]" json:"gallery"`   // You can use a proper media struct if needed
-	Itinerary      pq.StringArray `gorm:"type:text[]" json:"itinerary"` // Simplify or use JSONB
+	Gallery        pq.StringArray `gorm:"type:text[]" json:"gallery"`
+	Itinerary      pq.StringArray `gorm:"type:text[]" json:"itinerary"`
 	Tags           pq.StringArray `gorm:"type:text[]" json:"tags"`
 	Reviews        pq.StringArray `gorm:"type:text[]" json:"reviews"`
 	CreatedBy      uuid.UUID      `json:"createdBy"`
