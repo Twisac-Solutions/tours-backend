@@ -3,7 +3,7 @@ package database
 import (
 	"log"
 
-	"github.com/your-username/tout-api/models"
+	"github.com/Twisac-Solutions/tours-backend/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

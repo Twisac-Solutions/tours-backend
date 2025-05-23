@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"github.com/Twisac-Solutions/tours-backend/controllers"
+	"github.com/Twisac-Solutions/tours-backend/middlewares"
 	"github.com/gofiber/fiber/v2"
-	"github.com/your-username/tout-api/controllers"
-	"github.com/your-username/tout-api/middlewares"
 )
 
 func SetupRoutes(app *fiber.App) {
