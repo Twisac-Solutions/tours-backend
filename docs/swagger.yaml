@@ -1,4 +1,133 @@
+basePath: /
+definitions:
+  services.AuthResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      token:
+        description: Token is optional
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/services.UserResponse'
+        description: User is optional
+    type: object
+  services.RegisterInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  services.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      profile_picture:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8000
 info:
   contact: {}
-paths: {}
+  description: This is the API for the Tours Backend.
+  title: Tours Backend API
+  version: "1.0"
+paths:
+  /api/google-sso:
+    get:
+      consumes:
+      - application/json
+      description: Authenticate a user using Google SSO
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+      summary: Google Single Sign-On
+      tags:
+      - Auth
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with email and password
+      parameters:
+      - description: Login Input
+        in: body
+        name: loginInput
+        required: true
+        schema:
+          $ref: '#/definitions/services.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+      summary: Login a user
+      tags:
+      - Auth
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with auto-generated username
+      parameters:
+      - description: Register Input
+        in: body
+        name: registerInput
+        required: true
+        schema:
+          $ref: '#/definitions/services.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+      summary: Register a new user
+      tags:
+      - Auth
 swagger: "2.0"
