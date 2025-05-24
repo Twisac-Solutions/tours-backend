@@ -19,6 +19,7 @@ import (
 func main() {
 	config.InitConfig()
 	database.ConnectDB()
+	database.SeedSuperAdmin()
 
 	app := fiber.New()
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
