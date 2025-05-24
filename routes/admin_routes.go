@@ -8,6 +8,7 @@ import (
 
 func RegisterAdminRoutes(app *fiber.App) {
 	admin := app.Group("/admin", middlewares.AdminOnly)
+	admin.Post("/login", controllers.AdminLogin)
 
 	// Tour Routes
 	admin.Get("/tours", controllers.GetAllTours)
