@@ -30,4 +30,18 @@ func RegisterAdminRoutes(app *fiber.App) {
 	admin.Put("/destinations/:id", controllers.UpdateDestination)
 	admin.Delete("/destinations/:id", controllers.DeleteDestination)
 
+	// Category Routes
+	admin.Get("/categories", controllers.GetAllCategories)
+	admin.Get("/categories/:id", controllers.GetCategoryByID)
+	admin.Post("/categories", controllers.CreateCategory)
+	admin.Put("/categories/:id", controllers.UpdateCategory)
+	admin.Delete("/categories/:id", controllers.DeleteCategory)
+
+	// Review Routes
+	admin.Get("/reviews", controllers.GetAllReviews)
+	admin.Get("/reviews/:id", controllers.GetReviewByID)
+	admin.Post("/reviews", controllers.CreateReview)
+	admin.Put("/reviews/:id", controllers.UpdateReview)
+	admin.Delete("/reviews/:id", controllers.DeleteReview)
+
 }
