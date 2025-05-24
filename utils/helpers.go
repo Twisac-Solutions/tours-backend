@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -88,4 +89,7 @@ func GetGoogleUserInfo(code string) (*GoogleUserInfo, error) {
 		return nil, err
 	}
 	return &userInfo, nil
+}
+func GenerateUUID() uuid.UUID {
+	return uuid.New()
 }

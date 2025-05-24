@@ -45,4 +45,12 @@ func RegisterAdminRoutes(app *fiber.App) {
 	admin.Put("/reviews/:id", controllers.UpdateReview)
 	admin.Delete("/reviews/:id", controllers.DeleteReview)
 
+	admin.Put("/me/password", controllers.UpdateAdminPassword)
+
+	adminUsers := admin.Group("/users", middlewares.SuperAdminOnly())
+	adminUsers.Get("/", controllers.ListAdmins)
+	adminUsers.Post("/", controllers.CreateAdmin)
+	adminUsers.Put("/:id", controllers.UpdateAdmin)
+	adminUsers.Delete("/:id", controllers.DeleteAdmin)
+
 }
