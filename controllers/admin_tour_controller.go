@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/Twisac-Solutions/tours-backend/services"
+	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -31,7 +32,7 @@ func CreateTour(c *fiber.Ctx) error {
 
 	form, err := c.MultipartForm()
 	if err == nil && form != nil {
-		tour.CoverImage.URL, _ = services.SaveFile(form.File["coverImage"])
+		tour.CoverImage.URL, _ = utils.SaveFile(form.File["coverImage"])
 	}
 
 	err = services.CreateTour(&tour)
@@ -49,7 +50,7 @@ func UpdateTour(c *fiber.Ctx) error {
 	}
 	form, _ := c.MultipartForm()
 	if form != nil {
-		updated.CoverImage.URL, _ = services.SaveFile(form.File["coverImage"])
+		updated.CoverImage.URL, _ = utils.SaveFile(form.File["coverImage"])
 	}
 	err := services.UpdateTour(id, &updated)
 	if err != nil {
