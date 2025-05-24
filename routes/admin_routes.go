@@ -15,4 +15,11 @@ func RegisterAdminRoutes(app *fiber.App) {
 	admin.Post("/tours", controllers.CreateTour)
 	admin.Put("/tours/:id", controllers.UpdateTour)
 	admin.Delete("/tours/:id", controllers.DeleteTour)
+
+	//Events Routes
+	admin.Get("/events", controllers.GetAllEvents)
+	admin.Get("/events/:id", controllers.GetEventByID)
+	admin.Post("/events", controllers.CreateEvent)
+	admin.Put("/events/:id", controllers.UpdateEvent)
+	admin.Delete("/events/:id", controllers.DeleteEvent)
 }
