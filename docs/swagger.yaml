@@ -1,5 +1,19 @@
 basePath: /
 definitions:
+  controllers.AdminLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  controllers.AdminLoginResponse:
+    properties:
+      admin:
+        $ref: '#/definitions/utils.GoogleUserInfo'
+      token:
+        type: string
+    type: object
   controllers.UpdateAdminRequest:
     properties:
       email:
@@ -324,6 +338,17 @@ definitions:
       username:
         type: string
     type: object
+  utils.GoogleUserInfo:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      picture:
+        type: string
+    type: object
 host: localhost:8000
 info:
   contact: {}
@@ -448,7 +473,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get all categories
       tags:
-      - categories
+      - admin_categories
     post:
       consumes:
       - multipart/form-data
@@ -481,7 +506,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new category
       tags:
-      - categories
+      - admin_categories
   /admin/categories/{id}:
     delete:
       description: Deletes a category by ID
@@ -504,7 +529,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a category
       tags:
-      - categories
+      - admin_categories
     get:
       description: Retrieves a category by its ID
       parameters:
@@ -526,7 +551,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get category by ID
       tags:
-      - categories
+      - admin_categories
     put:
       consumes:
       - multipart/form-data
@@ -564,7 +589,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a category
       tags:
-      - categories
+      - admin_categories
   /admin/destinations:
     get:
       description: Retrieves a list of all destinations
@@ -583,7 +608,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get all destinations
       tags:
-      - destinations
+      - admin_destinations
     post:
       consumes:
       - multipart/form-data
@@ -616,7 +641,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new destination
       tags:
-      - destinations
+      - admin_destinations
   /admin/destinations/{id}:
     delete:
       description: Deletes a destination by ID
@@ -641,7 +666,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a destination
       tags:
-      - destinations
+      - admin_destinations
     get:
       description: Retrieves a destination by its ID
       parameters:
@@ -663,7 +688,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get destination by ID
       tags:
-      - destinations
+      - admin_destinations
     put:
       consumes:
       - multipart/form-data
@@ -701,7 +726,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a destination
       tags:
-      - destinations
+      - admin_destinations
   /admin/events:
     get:
       description: Retrieves a list of all events
@@ -720,7 +745,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get all events
       tags:
-      - events
+      - admin_events
     post:
       consumes:
       - multipart/form-data
@@ -753,7 +778,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new event
       tags:
-      - events
+      - admin_events
   /admin/events/{id}:
     delete:
       description: Deletes an event by ID
@@ -778,7 +803,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete an event
       tags:
-      - events
+      - admin_events
     get:
       description: Retrieves an event by its ID
       parameters:
@@ -800,7 +825,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get event by ID
       tags:
-      - events
+      - admin_events
     put:
       consumes:
       - multipart/form-data
@@ -838,7 +863,41 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update an event
       tags:
-      - events
+      - admin_events
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates an admin and returns a JWT token
+      parameters:
+      - description: Admin login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.AdminLoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Admin login
+      tags:
+      - admin_auth
   /admin/reviews:
     get:
       description: Retrieves a list of all reviews
@@ -857,7 +916,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get all reviews
       tags:
-      - reviews
+      - admin_reviews
     post:
       consumes:
       - application/json
@@ -886,7 +945,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new review
       tags:
-      - reviews
+      - admin_reviews
   /admin/reviews/{id}:
     delete:
       description: Deletes a review by ID
@@ -909,7 +968,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a review
       tags:
-      - reviews
+      - admin_reviews
     get:
       description: Retrieves a review by its ID
       parameters:
@@ -931,7 +990,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get review by ID
       tags:
-      - reviews
+      - admin_reviews
     put:
       consumes:
       - application/json
@@ -965,7 +1024,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a review
       tags:
-      - reviews
+      - admin_reviews
   /admin/tours:
     get:
       description: Retrieves a list of all tours
@@ -984,7 +1043,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get all tours
       tags:
-      - tours
+      - admin_tours
     post:
       consumes:
       - multipart/form-data
@@ -1017,7 +1076,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new tour
       tags:
-      - tours
+      - admin_tours
   /admin/tours/{id}:
     delete:
       description: Deletes a tour by ID
@@ -1042,7 +1101,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a tour
       tags:
-      - tours
+      - admin_tours
     get:
       description: Retrieves a tour by its ID
       parameters:
@@ -1102,7 +1161,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a tour
       tags:
-      - tours
+      - admin_tours
   /api/login:
     post:
       consumes:

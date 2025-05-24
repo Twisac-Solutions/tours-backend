@@ -10,7 +10,7 @@ import (
 // GetAllDestinations godoc
 // @Summary      Get all destinations
 // @Description  Retrieves a list of all destinations
-// @Tags         destinations
+// @Tags         admin_destinations
 // @Produce      json
 // @Success      200  {array}   models.Destination
 // @Failure      500  {object}  models.ErrorResponse
@@ -26,7 +26,7 @@ func GetAllDestinations(c *fiber.Ctx) error {
 // GetDestinationByID godoc
 // @Summary      Get destination by ID
 // @Description  Retrieves a destination by its ID
-// @Tags         destinations
+// @Tags         admin_destinations
 // @Produce      json
 // @Param        id   path      string  true  "Destination ID"
 // @Success      200  {object}  models.Destination
@@ -44,7 +44,7 @@ func GetDestinationByID(c *fiber.Ctx) error {
 // CreateDestination godoc
 // @Summary      Create a new destination
 // @Description  Creates a new destination
-// @Tags         destinations
+// @Tags         admin_destinations
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        destination  body      models.Destination  true  "Destination object"
@@ -74,7 +74,7 @@ func CreateDestination(c *fiber.Ctx) error {
 // UpdateDestination godoc
 // @Summary      Update a destination
 // @Description  Updates an existing destination by ID
-// @Tags         destinations
+// @Tags         admin_destinations
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        id    path      string      true  "Destination ID"
@@ -106,7 +106,7 @@ func UpdateDestination(c *fiber.Ctx) error {
 // DeleteDestination godoc
 // @Summary      Delete a destination
 // @Description  Deletes a destination by ID
-// @Tags         destinations
+// @Tags         admin_destinations
 // @Produce      json
 // @Param        id   path      string  true  "Destination ID"
 // @Success      200  {object}  map[string]string

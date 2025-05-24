@@ -10,7 +10,7 @@ import (
 // GetAllTours godoc
 // @Summary      Get all tours
 // @Description  Retrieves a list of all tours
-// @Tags         tours
+// @Tags         admin_tours
 // @Produce      json
 // @Success      200  {array}   models.Tour
 // @Failure      500  {object}  models.ErrorResponse
@@ -44,7 +44,7 @@ func GetTourByID(c *fiber.Ctx) error {
 // CreateTour godoc
 // @Summary      Create a new tour
 // @Description  Creates a new tour
-// @Tags         tours
+// @Tags         admin_tours
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        tour  body      models.Tour  true  "Tour object"
@@ -74,7 +74,7 @@ func CreateTour(c *fiber.Ctx) error {
 // UpdateTour godoc
 // @Summary      Update a tour
 // @Description  Updates an existing tour by ID
-// @Tags         tours
+// @Tags         admin_tours
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        id    path      string      true  "Tour ID"
@@ -104,7 +104,7 @@ func UpdateTour(c *fiber.Ctx) error {
 // DeleteTour godoc
 // @Summary      Delete a tour
 // @Description  Deletes a tour by ID
-// @Tags         tours
+// @Tags         admin_tours
 // @Produce      json
 // @Param        id   path      string  true  "Tour ID"
 // @Success      200  {object}  map[string]string

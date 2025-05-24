@@ -10,7 +10,7 @@ import (
 // GetAllEvents godoc
 // @Summary      Get all events
 // @Description  Retrieves a list of all events
-// @Tags         events
+// @Tags         admin_events
 // @Produce      json
 // @Success      200  {array}   models.Event
 // @Failure      500  {object}  models.ErrorResponse
@@ -26,7 +26,7 @@ func GetAllEvents(c *fiber.Ctx) error {
 // GetEventByID godoc
 // @Summary      Get event by ID
 // @Description  Retrieves an event by its ID
-// @Tags         events
+// @Tags         admin_events
 // @Produce      json
 // @Param        id   path      string  true  "Event ID"
 // @Success      200  {object}  models.Event
@@ -44,7 +44,7 @@ func GetEventByID(c *fiber.Ctx) error {
 // CreateEvent godoc
 // @Summary      Create a new event
 // @Description  Creates a new event
-// @Tags         events
+// @Tags         admin_events
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        event  body      models.Event  true  "Event object"
@@ -72,7 +72,7 @@ func CreateEvent(c *fiber.Ctx) error {
 // UpdateEvent godoc
 // @Summary      Update an event
 // @Description  Updates an existing event by ID
-// @Tags         events
+// @Tags         admin_events
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        id    path      string      true  "Event ID"
@@ -102,7 +102,7 @@ func UpdateEvent(c *fiber.Ctx) error {
 // DeleteEvent godoc
 // @Summary      Delete an event
 // @Description  Deletes an event by ID
-// @Tags         events
+// @Tags         admin_events
 // @Produce      json
 // @Param        id   path      string  true  "Event ID"
 // @Success      200  {object}  map[string]string

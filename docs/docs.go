@@ -89,7 +89,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "admin_categories"
                 ],
                 "summary": "Get all categories",
                 "responses": {
@@ -119,7 +119,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "admin_categories"
                 ],
                 "summary": "Create a new category",
                 "parameters": [
@@ -168,7 +168,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "admin_categories"
                 ],
                 "summary": "Get category by ID",
                 "parameters": [
@@ -204,7 +204,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "admin_categories"
                 ],
                 "summary": "Update a category",
                 "parameters": [
@@ -258,7 +258,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "admin_categories"
                 ],
                 "summary": "Delete a category",
                 "parameters": [
@@ -293,7 +293,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "destinations"
+                    "admin_destinations"
                 ],
                 "summary": "Get all destinations",
                 "responses": {
@@ -323,7 +323,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "destinations"
+                    "admin_destinations"
                 ],
                 "summary": "Create a new destination",
                 "parameters": [
@@ -372,7 +372,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "destinations"
+                    "admin_destinations"
                 ],
                 "summary": "Get destination by ID",
                 "parameters": [
@@ -408,7 +408,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "destinations"
+                    "admin_destinations"
                 ],
                 "summary": "Update a destination",
                 "parameters": [
@@ -462,7 +462,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "destinations"
+                    "admin_destinations"
                 ],
                 "summary": "Delete a destination",
                 "parameters": [
@@ -500,7 +500,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "events"
+                    "admin_events"
                 ],
                 "summary": "Get all events",
                 "responses": {
@@ -530,7 +530,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "events"
+                    "admin_events"
                 ],
                 "summary": "Create a new event",
                 "parameters": [
@@ -579,7 +579,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "events"
+                    "admin_events"
                 ],
                 "summary": "Get event by ID",
                 "parameters": [
@@ -615,7 +615,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "events"
+                    "admin_events"
                 ],
                 "summary": "Update an event",
                 "parameters": [
@@ -669,7 +669,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "events"
+                    "admin_events"
                 ],
                 "summary": "Delete an event",
                 "parameters": [
@@ -700,6 +700,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/login": {
+            "post": {
+                "description": "Authenticates an admin and returns a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin_auth"
+                ],
+                "summary": "Admin login",
+                "parameters": [
+                    {
+                        "description": "Admin login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.AdminLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.AdminLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/reviews": {
             "get": {
                 "description": "Retrieves a list of all reviews",
@@ -707,7 +759,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reviews"
+                    "admin_reviews"
                 ],
                 "summary": "Get all reviews",
                 "responses": {
@@ -737,7 +789,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reviews"
+                    "admin_reviews"
                 ],
                 "summary": "Create a new review",
                 "parameters": [
@@ -780,7 +832,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reviews"
+                    "admin_reviews"
                 ],
                 "summary": "Get review by ID",
                 "parameters": [
@@ -816,7 +868,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reviews"
+                    "admin_reviews"
                 ],
                 "summary": "Update a review",
                 "parameters": [
@@ -864,7 +916,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reviews"
+                    "admin_reviews"
                 ],
                 "summary": "Delete a review",
                 "parameters": [
@@ -899,7 +951,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tours"
+                    "admin_tours"
                 ],
                 "summary": "Get all tours",
                 "responses": {
@@ -929,7 +981,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tours"
+                    "admin_tours"
                 ],
                 "summary": "Create a new tour",
                 "parameters": [
@@ -1014,7 +1066,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tours"
+                    "admin_tours"
                 ],
                 "summary": "Update a tour",
                 "parameters": [
@@ -1068,7 +1120,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tours"
+                    "admin_tours"
                 ],
                 "summary": "Delete a tour",
                 "parameters": [
@@ -1311,6 +1363,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.AdminLoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.AdminLoginResponse": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "$ref": "#/definitions/utils.GoogleUserInfo"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.UpdateAdminRequest": {
             "type": "object",
             "properties": {
@@ -1800,6 +1874,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.GoogleUserInfo": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "picture": {
                     "type": "string"
                 }
             }

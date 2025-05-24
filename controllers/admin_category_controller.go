@@ -10,7 +10,7 @@ import (
 // GetAllCategories godoc
 // @Summary      Get all categories
 // @Description  Retrieves a list of all categories
-// @Tags         categories
+// @Tags         admin_categories
 // @Produce      json
 // @Success      200  {array}   models.Category
 // @Failure      500  {object}  models.ErrorResponse
@@ -26,7 +26,7 @@ func GetAllCategories(c *fiber.Ctx) error {
 // GetCategoryByID godoc
 // @Summary      Get category by ID
 // @Description  Retrieves a category by its ID
-// @Tags         categories
+// @Tags         admin_categories
 // @Produce      json
 // @Param        id   path      string  true  "Category ID"
 // @Success      200  {object}  models.Category
@@ -44,7 +44,7 @@ func GetCategoryByID(c *fiber.Ctx) error {
 // CreateCategory godoc
 // @Summary      Create a new category
 // @Description  Creates a new category
-// @Tags         categories
+// @Tags         admin_categories
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        category  body      models.Category  true  "Category object"
@@ -73,7 +73,7 @@ func CreateCategory(c *fiber.Ctx) error {
 // UpdateCategory godoc
 // @Summary      Update a category
 // @Description  Updates an existing category by ID
-// @Tags         categories
+// @Tags         admin_categories
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        id    path      string      true  "Category ID"
@@ -104,7 +104,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 // DeleteCategory godoc
 // @Summary      Delete a category
 // @Description  Deletes a category by ID
-// @Tags         categories
+// @Tags         admin_categories
 // @Produce      json
 // @Param        id   path      string  true  "Category ID"
 // @Success      200  {object}  models.MessageResponse

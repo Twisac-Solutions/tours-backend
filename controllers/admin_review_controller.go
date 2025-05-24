@@ -9,7 +9,7 @@ import (
 // GetAllReviews godoc
 // @Summary      Get all reviews
 // @Description  Retrieves a list of all reviews
-// @Tags         reviews
+// @Tags         admin_reviews
 // @Produce      json
 // @Success      200  {array}   models.Review
 // @Failure      500  {object}  models.ErrorResponse
@@ -25,7 +25,7 @@ func GetAllReviews(c *fiber.Ctx) error {
 // GetReviewByID godoc
 // @Summary      Get review by ID
 // @Description  Retrieves a review by its ID
-// @Tags         reviews
+// @Tags         admin_reviews
 // @Produce      json
 // @Param        id   path      string  true  "Review ID"
 // @Success      200  {object}  models.Review
@@ -43,7 +43,7 @@ func GetReviewByID(c *fiber.Ctx) error {
 // CreateReview godoc
 // @Summary      Create a new review
 // @Description  Creates a new review
-// @Tags         reviews
+// @Tags         admin_reviews
 // @Accept       json
 // @Produce      json
 // @Param        review  body      models.Review  true  "Review object"
@@ -65,7 +65,7 @@ func CreateReview(c *fiber.Ctx) error {
 // UpdateReview godoc
 // @Summary      Update a review
 // @Description  Updates an existing review by ID
-// @Tags         reviews
+// @Tags         admin_reviews
 // @Accept       json
 // @Produce      json
 // @Param        id    path      string      true  "Review ID"
@@ -89,7 +89,7 @@ func UpdateReview(c *fiber.Ctx) error {
 // DeleteReview godoc
 // @Summary      Delete a review
 // @Description  Deletes a review by ID
-// @Tags         reviews
+// @Tags         admin_reviews
 // @Produce      json
 // @Param        id   path      string  true  "Review ID"
 // @Success      200  {object}  models.MessageResponse
