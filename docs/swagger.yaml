@@ -1,5 +1,82 @@
 basePath: /
 definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Media:
+    properties:
+      thumbnailUrl:
+        type: string
+      url:
+        type: string
+    type: object
+  models.Tour:
+    properties:
+      availability:
+        type: integer
+      categoryId:
+        type: string
+      coverImage:
+        $ref: '#/definitions/models.Media'
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      currency:
+        type: string
+      destinationId:
+        type: string
+      durationDays:
+        type: integer
+      endDate:
+        type: string
+      exclusions:
+        items:
+          type: string
+        type: array
+      fullDescription:
+        type: string
+      gallery:
+        items:
+          type: string
+        type: array
+      groupSize:
+        type: integer
+      id:
+        type: string
+      inclusions:
+        items:
+          type: string
+        type: array
+      isFeatured:
+        type: boolean
+      itinerary:
+        items:
+          type: string
+        type: array
+      pricePerPerson:
+        type: number
+      reviews:
+        items:
+          type: string
+        type: array
+      shortDescription:
+        type: string
+      slug:
+        type: string
+      startDate:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   services.AuthResponse:
     properties:
       message:
@@ -50,29 +127,143 @@ info:
   title: Tours Backend API
   version: "1.0"
 paths:
-  /api/google-sso:
+  /admin/tours:
     get:
-      consumes:
-      - application/json
-      description: Authenticate a user using Google SSO
+      description: Retrieves a list of all tours
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/services.AuthResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/services.AuthResponse'
+            items:
+              $ref: '#/definitions/models.Tour'
+            type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/services.AuthResponse'
-      summary: Google Single Sign-On
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all tours
       tags:
-      - Auth
+      - tours
+    post:
+      consumes:
+      - multipart/form-data
+      description: Creates a new tour
+      parameters:
+      - description: Tour object
+        in: body
+        name: tour
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tour'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tour'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new tour
+      tags:
+      - tours
+  /admin/tours/{id}:
+    delete:
+      description: Deletes a tour by ID
+      parameters:
+      - description: Tour ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a tour
+      tags:
+      - tours
+    get:
+      description: Retrieves a tour by its ID
+      parameters:
+      - description: Tour ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tour'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get tour by ID
+      tags:
+      - tours
+    put:
+      consumes:
+      - multipart/form-data
+      description: Updates an existing tour by ID
+      parameters:
+      - description: Tour ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Tour object
+        in: body
+        name: tour
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tour'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tour'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a tour
+      tags:
+      - tours
   /api/login:
     post:
       consumes:
