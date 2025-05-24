@@ -33,14 +33,30 @@ func UpdateAdminPassword(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Password updated"})
 }
 
-// ListAdmins lists all admin users (super admin only).
+// ListAdmins godoc
+// @Summary      List all admins
+// @Description  Lists all admin users (super admin only)
+// @Tags         admins
+// @Produce      json
+// @Success      200  {array}   models.User
+// @Router       /admin [get]
 func ListAdmins(c *fiber.Ctx) error {
 	var admins []models.User
 	database.DB.Where("role = ?", "admin").Find(&admins)
 	return c.JSON(admins)
 }
 
-// CreateAdmin creates a new admin user (super admin only).
+// CreateAdmin godoc
+// @Summary      Create admin
+// @Description  Creates a new admin user (super admin only)
+// @Tags         admins
+// @Accept       json
+// @Produce      json
+// @Param        body  body      models.User  true  "Admin user object"
+// @Success      200   {object}  models.User
+// @Failure      400   {object}  models.ErrorResponse
+// @Failure      500   {object}  models.ErrorResponse
+// @Router       /admin [post]
 func CreateAdmin(c *fiber.Ctx) error {
 	var data models.User
 	if err := c.BodyParser(&data); err != nil {
@@ -56,7 +72,18 @@ func CreateAdmin(c *fiber.Ctx) error {
 	return c.JSON(data)
 }
 
-// UpdateAdmin updates an admin's name or email (super admin only).
+// UpdateAdmin godoc
+// @Summary      Update admin
+// @Description  Updates an admin's name or email (super admin only)
+// @Tags         admins
+// @Accept       json
+// @Produce      json
+// @Param        id    path      string  true  "Admin ID"
+// @Param        body  body      UpdateAdminRequest  true  "Fields to update"
+// @Success      200   {object}  models.User
+// @Failure      400   {object}  models.ErrorResponse
+// @Failure      404   {object}  models.ErrorResponse
+// @Router       /admin/{id} [put]
 func UpdateAdmin(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var data models.User
@@ -80,7 +107,15 @@ func UpdateAdmin(c *fiber.Ctx) error {
 	return c.JSON(data)
 }
 
-// DeleteAdmin deletes an admin user (super admin only).
+// DeleteAdmin godoc
+// @Summary      Delete admin
+// @Description  Deletes an admin user (super admin only)
+// @Tags         admins
+// @Produce      json
+// @Param        id   path      string  true  "Admin ID"
+// @Success      204  "No Content"
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /admin/{id} [delete]
 func DeleteAdmin(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if err := database.DB.Where("id = ? AND role = ?", id, "admin").Delete(&models.User{}).Error; err != nil {

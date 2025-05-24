@@ -7,6 +7,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetAllCategories godoc
+// @Summary      Get all categories
+// @Description  Retrieves a list of all categories
+// @Tags         categories
+// @Produce      json
+// @Success      200  {array}   models.Category
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /admin/categories [get]
 func GetAllCategories(c *fiber.Ctx) error {
 	categories, err := services.GetAllCategories()
 	if err != nil {
@@ -15,6 +23,15 @@ func GetAllCategories(c *fiber.Ctx) error {
 	return c.JSON(categories)
 }
 
+// GetCategoryByID godoc
+// @Summary      Get category by ID
+// @Description  Retrieves a category by its ID
+// @Tags         categories
+// @Produce      json
+// @Param        id   path      string  true  "Category ID"
+// @Success      200  {object}  models.Category
+// @Failure      404  {object}  models.ErrorResponse
+// @Router       /admin/categories/{id} [get]
 func GetCategoryByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	category, err := services.GetCategoryByID(id)
@@ -24,6 +41,18 @@ func GetCategoryByID(c *fiber.Ctx) error {
 	return c.JSON(category)
 }
 
+// CreateCategory godoc
+// @Summary      Create a new category
+// @Description  Creates a new category
+// @Tags         categories
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        category  body      models.Category  true  "Category object"
+// @Param        coverImage formData file false "Cover image file"
+// @Success      200   {object}  models.Category
+// @Failure      400   {object}  models.ErrorResponse
+// @Failure      500   {object}  models.ErrorResponse
+// @Router       /admin/categories [post]
 func CreateCategory(c *fiber.Ctx) error {
 	var category models.Category
 	if err := c.BodyParser(&category); err != nil {
@@ -41,6 +70,19 @@ func CreateCategory(c *fiber.Ctx) error {
 	return c.JSON(category)
 }
 
+// UpdateCategory godoc
+// @Summary      Update a category
+// @Description  Updates an existing category by ID
+// @Tags         categories
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        id    path      string      true  "Category ID"
+// @Param        category body      models.Category true  "Category object"
+// @Param        coverImage formData file false "Cover image file"
+// @Success      200   {object}  models.Category
+// @Failure      400   {object}  models.ErrorResponse
+// @Failure      500   {object}  models.ErrorResponse
+// @Router       /admin/categories/{id} [put]
 func UpdateCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var updated models.Category
@@ -59,6 +101,15 @@ func UpdateCategory(c *fiber.Ctx) error {
 	return c.JSON(updated)
 }
 
+// DeleteCategory godoc
+// @Summary      Delete a category
+// @Description  Deletes a category by ID
+// @Tags         categories
+// @Produce      json
+// @Param        id   path      string  true  "Category ID"
+// @Success      200  {object}  models.MessageResponse
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /admin/categories/{id} [delete]
 func DeleteCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if err := services.DeleteCategory(id); err != nil {
