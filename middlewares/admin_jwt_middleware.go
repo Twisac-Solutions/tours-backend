@@ -7,7 +7,7 @@ import (
 
 func AdminProtected() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		userID, role, err := utils.VerifyJWT(c)
+		userID, role, err := utils.VerifyJWTRole(c)
 		if err != nil || role != "admin" {
 			return c.Status(401).JSON(fiber.Map{"error": "Unauthorized"})
 		}

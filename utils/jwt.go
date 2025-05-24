@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"os"
 	"time"
 
@@ -38,4 +39,32 @@ func VerifyJWT(c *fiber.Ctx) (string, error) {
 		return claims["userId"].(string), nil
 	}
 	return "", err
+}
+func VerifyJWTRole(c *fiber.Ctx) (userID string, role string, err error) {
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return "", "", errors.New("Missing token")
+	}
+
+	tokenStr := authHeader[len("Bearer "):]
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+
+	if err != nil || !token.Valid {
+		return "", "", errors.New("Invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", "", errors.New("Invalid token claims")
+	}
+
+	id, okID := claims["user_id"].(string)
+	roleStr, okRole := claims["role"].(string)
+	if !okID || !okRole {
+		return "", "", errors.New("Invalid token data")
+	}
+
+	return id, roleStr, nil
 }

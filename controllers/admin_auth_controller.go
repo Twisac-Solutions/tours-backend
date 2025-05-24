@@ -20,7 +20,7 @@ func AdminLogin(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
 
-	token, err := utils.GenerateJWT(admin.ID.String(), "admin")
+	token, err := utils.GenerateJWTRole(admin.ID.String(), "admin")
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to generate token"})
 	}
