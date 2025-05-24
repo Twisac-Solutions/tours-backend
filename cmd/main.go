@@ -23,6 +23,7 @@ func main() {
 	app := fiber.New()
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	routes.SetupRoutes(app)
+	routes.RegisterAdminRoutes(app)
 
 	log.Fatal(app.Listen(":8000"))
 }
