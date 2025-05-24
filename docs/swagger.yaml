@@ -1,5 +1,70 @@
 basePath: /
 definitions:
+  controllers.UpdateAdminRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      coverImage:
+        $ref: '#/definitions/models.Media'
+      createdAt:
+        type: string
+      description:
+        type: string
+      icon:
+        description: emoji or UI icon
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      slug:
+        type: string
+      type:
+        description: tour, event, both
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Destination:
+    properties:
+      country:
+        type: string
+      coverImage:
+        $ref: '#/definitions/models.Media'
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      description:
+        type: string
+      events:
+        items:
+          type: string
+        type: array
+      gallery:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      region:
+        type: string
+      slug:
+        type: string
+      tours:
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
@@ -75,6 +140,44 @@ definitions:
       url:
         type: string
     type: object
+  models.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.ProfileImage:
+    properties:
+      thumbnailUrl:
+        type: string
+      url:
+        type: string
+    type: object
+  models.Review:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      packageId:
+        description: Refers to either a Tour or an Event
+        type: string
+      rating:
+        description: 1 to 5
+        type: integer
+      userId:
+        type: string
+    type: object
+  models.SocialLinks:
+    properties:
+      facebook:
+        type: string
+      instagram:
+        type: string
+      website:
+        type: string
+    type: object
   models.Tour:
     properties:
       availability:
@@ -140,6 +243,44 @@ definitions:
       updatedAt:
         type: string
     type: object
+  models.User:
+    properties:
+      bio:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      emailVerifiedAt:
+        type: string
+      id:
+        type: string
+      isVerified:
+        type: boolean
+      language:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      profileImage:
+        $ref: '#/definitions/models.ProfileImage'
+      role:
+        description: user, admin, vendor, creator
+        type: string
+      socialLinks:
+        $ref: '#/definitions/models.SocialLinks'
+      timezone:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
   services.AuthResponse:
     properties:
       message:
@@ -190,6 +331,377 @@ info:
   title: Tours Backend API
   version: "1.0"
 paths:
+  /admin:
+    get:
+      description: Lists all admin users (super admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: List all admins
+      tags:
+      - admins
+    post:
+      consumes:
+      - application/json
+      description: Creates a new admin user (super admin only)
+      parameters:
+      - description: Admin user object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create admin
+      tags:
+      - admins
+  /admin/{id}:
+    delete:
+      description: Deletes an admin user (super admin only)
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete admin
+      tags:
+      - admins
+    put:
+      consumes:
+      - application/json
+      description: Updates an admin's name or email (super admin only)
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UpdateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update admin
+      tags:
+      - admins
+  /admin/categories:
+    get:
+      description: Retrieves a list of all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - multipart/form-data
+      description: Creates a new category
+      parameters:
+      - description: Category object
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.Category'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new category
+      tags:
+      - categories
+  /admin/categories/{id}:
+    delete:
+      description: Deletes a category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a category
+      tags:
+      - categories
+    get:
+      description: Retrieves a category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get category by ID
+      tags:
+      - categories
+    put:
+      consumes:
+      - multipart/form-data
+      description: Updates an existing category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category object
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.Category'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a category
+      tags:
+      - categories
+  /admin/destinations:
+    get:
+      description: Retrieves a list of all destinations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Destination'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all destinations
+      tags:
+      - destinations
+    post:
+      consumes:
+      - multipart/form-data
+      description: Creates a new destination
+      parameters:
+      - description: Destination object
+        in: body
+        name: destination
+        required: true
+        schema:
+          $ref: '#/definitions/models.Destination'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Destination'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new destination
+      tags:
+      - destinations
+  /admin/destinations/{id}:
+    delete:
+      description: Deletes a destination by ID
+      parameters:
+      - description: Destination ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a destination
+      tags:
+      - destinations
+    get:
+      description: Retrieves a destination by its ID
+      parameters:
+      - description: Destination ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Destination'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get destination by ID
+      tags:
+      - destinations
+    put:
+      consumes:
+      - multipart/form-data
+      description: Updates an existing destination by ID
+      parameters:
+      - description: Destination ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Destination object
+        in: body
+        name: destination
+        required: true
+        schema:
+          $ref: '#/definitions/models.Destination'
+      - description: Cover image file
+        in: formData
+        name: coverImage
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Destination'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a destination
+      tags:
+      - destinations
   /admin/events:
     get:
       description: Retrieves a list of all events
@@ -327,6 +839,133 @@ paths:
       summary: Update an event
       tags:
       - events
+  /admin/reviews:
+    get:
+      description: Retrieves a list of all reviews
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Review'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all reviews
+      tags:
+      - reviews
+    post:
+      consumes:
+      - application/json
+      description: Creates a new review
+      parameters:
+      - description: Review object
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/models.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new review
+      tags:
+      - reviews
+  /admin/reviews/{id}:
+    delete:
+      description: Deletes a review by ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a review
+      tags:
+      - reviews
+    get:
+      description: Retrieves a review by its ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get review by ID
+      tags:
+      - reviews
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing review by ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Review object
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/models.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a review
+      tags:
+      - reviews
   /admin/tours:
     get:
       description: Retrieves a list of all tours

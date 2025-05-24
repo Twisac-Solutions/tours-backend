@@ -33,6 +33,11 @@ func UpdateAdminPassword(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Password updated"})
 }
 
+type UpdateAdminRequest struct {
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
+}
+
 // ListAdmins godoc
 // @Summary      List all admins
 // @Description  Lists all admin users (super admin only)
