@@ -13,8 +13,12 @@ type AdminLoginRequest struct {
 
 // AdminLoginResponse represents the admin login response payload.
 type AdminLoginResponse struct {
-	Token string               `json:"token"`
-	Admin utils.GoogleUserInfo `json:"admin"`
+	ID             string `json:"id"`
+	Email          string `json:"email"`
+	Name           string `json:"name"`
+	Username       string `json:"username"`
+	Role           string `json:"role"`
+	ProfilePicture string `json:"profile_picture"`
 }
 
 // AdminLogin godoc
@@ -48,5 +52,11 @@ func AdminLogin(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to generate token"})
 	}
 
-	return c.JSON(fiber.Map{"token": token, "admin": admin})
+	return c.JSON(fiber.Map{"token": token, "user": &AdminLoginResponse{
+		ID:       admin.ID.String(),
+		Email:    admin.Email,
+		Name:     admin.Name,
+		Username: admin.Username,
+		Role:     admin.Role,
+	}})
 }
