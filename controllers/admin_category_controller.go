@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/Twisac-Solutions/tours-backend/services"
-	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -45,10 +44,9 @@ func GetCategoryByID(c *fiber.Ctx) error {
 // @Summary      Create a new category
 // @Description  Creates a new category
 // @Tags         admin_categories
-// @Accept       multipart/form-data
+// @Accept       json
 // @Produce      json
 // @Param        category  body      models.Category  true  "Category object"
-// @Param        coverImage formData file false "Cover image file"
 // @Success      200   {object}  models.Category
 // @Failure      400   {object}  models.ErrorResponse
 // @Failure      500   {object}  models.ErrorResponse
@@ -59,9 +57,12 @@ func CreateCategory(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
-	form, _ := c.MultipartForm()
-	if form != nil {
-		category.CoverImage.URL, _ = utils.SaveFile(form.File["coverImage"])
+	// Validate required fields
+	if category.Name == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "Name is required"})
+	}
+	if category.Icon == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "Icon is required"})
 	}
 
 	if err := services.CreateCategory(&category); err != nil {
@@ -88,11 +89,6 @@ func UpdateCategory(c *fiber.Ctx) error {
 	var updated models.Category
 	if err := c.BodyParser(&updated); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
-	}
-
-	form, _ := c.MultipartForm()
-	if form != nil {
-		updated.CoverImage.URL, _ = utils.SaveFile(form.File["coverImage"])
 	}
 
 	if err := services.UpdateCategory(id, &updated); err != nil {
