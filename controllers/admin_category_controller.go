@@ -75,7 +75,7 @@ func CreateCategory(c *fiber.Ctx) error {
 // @Summary      Update a category
 // @Description  Updates an existing category by ID
 // @Tags         admin_categories
-// @Accept       multipart/form-data
+// @Accept       json
 // @Produce      json
 // @Param        id    path      string      true  "Category ID"
 // @Param        category body      models.Category true  "Category object"
