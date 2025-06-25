@@ -31,6 +31,7 @@ type UserResponse struct {
 	Name           string `json:"name"`
 	Username       string `json:"username"`
 	ProfilePicture string `json:"profile_picture"`
+	Role           string `json:"role"`
 }
 
 // RegisterInput represents the expected input for user registration.
@@ -124,6 +125,7 @@ func Login(c *fiber.Ctx) error {
 			Email:    user.Email,
 			Name:     user.Name,
 			Username: user.Username,
+			Role:     user.Role,
 			// ProfilePicture: user.ProfilePicture, // Uncomment if available in your model
 		},
 	})
@@ -239,4 +241,10 @@ func Logout(c *fiber.Ctx) error {
 		Status:  "success",
 		Message: "Logout successful",
 	})
+}
+
+func FindAdminByEmail(email string) (*models.User, error) {
+	var admin models.User
+	err := database.DB.First(&admin, "email = ?", email).Error
+	return &admin, err
 }
