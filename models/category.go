@@ -7,13 +7,10 @@ import (
 )
 
 type Category struct {
-	ID          uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
+	ID          uuid.UUID `gorm:"type:text;primaryKey;default:gen_random_uuid()" json:"id"`
 	Name        string    `json:"name"`
-	Slug        string    `gorm:"uniqueIndex" json:"slug"`
 	Description string    `json:"description"`
-	Type        string    `json:"type"` // tour, event, both
 	Icon        string    `json:"icon"` // emoji or UI icon
-	CoverImage  Media     `gorm:"embedded" json:"coverImage"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"createdAt"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updatedAt"`
 }
