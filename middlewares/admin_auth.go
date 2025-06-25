@@ -5,7 +5,12 @@ import (
 )
 
 func AdminOnly(c *fiber.Ctx) error {
-	// Dummy example; replace with real role check
+	// Skip auth check for login route
+	if c.Path() == "/admin/login" {
+		return c.Next()
+	}
+
+	// Auth check for all other admin routes
 	role := c.Locals("userRole")
 	if role != "admin" {
 		return c.Status(403).JSON(fiber.Map{"error": "Forbidden"})
