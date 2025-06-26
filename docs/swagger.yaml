@@ -9,9 +9,17 @@ definitions:
     type: object
   controllers.AdminLoginResponse:
     properties:
-      admin:
-        $ref: '#/definitions/utils.GoogleUserInfo'
-      token:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      profile_picture:
+        type: string
+      role:
+        type: string
+      username:
         type: string
     type: object
   controllers.UpdateAdminRequest:
@@ -23,8 +31,6 @@ definitions:
     type: object
   models.Category:
     properties:
-      coverImage:
-        $ref: '#/definitions/models.Media'
       createdAt:
         type: string
       description:
@@ -35,11 +41,6 @@ definitions:
       id:
         type: string
       name:
-        type: string
-      slug:
-        type: string
-      type:
-        description: tour, event, both
         type: string
       updatedAt:
         type: string
@@ -335,18 +336,9 @@ definitions:
         type: string
       profile_picture:
         type: string
+      role:
+        type: string
       username:
-        type: string
-    type: object
-  utils.GoogleUserInfo:
-    properties:
-      email:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      picture:
         type: string
     type: object
 host: localhost:8000
@@ -476,7 +468,7 @@ paths:
       - admin_categories
     post:
       consumes:
-      - multipart/form-data
+      - application/json
       description: Creates a new category
       parameters:
       - description: Category object
@@ -485,10 +477,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.Category'
-      - description: Cover image file
-        in: formData
-        name: coverImage
-        type: file
       produces:
       - application/json
       responses:
@@ -554,7 +542,7 @@ paths:
       - admin_categories
     put:
       consumes:
-      - multipart/form-data
+      - application/json
       description: Updates an existing category by ID
       parameters:
       - description: Category ID
