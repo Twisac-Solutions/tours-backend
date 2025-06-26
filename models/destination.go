@@ -8,12 +8,12 @@ import (
 )
 
 type Destination struct {
-	ID          uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
-	Name        string    `json:"name"`
-	Country     string    `json:"country"`
-	Region      string    `json:"region"`
-	Description string    `json:"description"`
-	CoverImage  Media     `gorm:"foreignKey:DestinationID" json:"coverImage"`
+	ID          uuid.UUID        `gorm:"type:text;primaryKey" json:"id"`
+	Name        string           `json:"name"`
+	Country     string           `json:"country"`
+	Region      string           `json:"region"`
+	Description string           `json:"description"`
+	CoverImage  MediaDestination `gorm:"foreignKey:DestinationID" json:"coverImage"`
 	// Gallery     []string  `gorm:"type:text[]" json:"gallery"`
 	// Tours     []string  `gorm:"type:text[]" json:"tours"`
 	// Events    []string  `gorm:"type:text[]" json:"events"`

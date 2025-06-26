@@ -1412,7 +1412,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "icon": {
-                    "description": "emoji or UI icon",
+                    "description": "UI icon",
                     "type": "string"
                 },
                 "id": {
@@ -1433,28 +1433,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "coverImage": {
-                    "$ref": "#/definitions/models.Media"
+                    "$ref": "#/definitions/models.MediaDestination"
                 },
                 "createdAt": {
                     "type": "string"
                 },
                 "createdBy": {
+                    "description": "Gallery     []string  ` + "`" + `gorm:\"type:text[]\" json:\"gallery\"` + "`" + `\nTours     []string  ` + "`" + `gorm:\"type:text[]\" json:\"tours\"` + "`" + `\nEvents    []string  ` + "`" + `gorm:\"type:text[]\" json:\"events\"` + "`" + `",
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
-                },
-                "events": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "gallery": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "id": {
                     "type": "string"
@@ -1464,15 +1453,6 @@ const docTemplate = `{
                 },
                 "region": {
                     "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "tours": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "updatedAt": {
                     "type": "string"
@@ -1592,6 +1572,48 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "models.MediaDestination": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "destinationID": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.MediaType"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MediaType": {
+            "type": "string",
+            "enum": [
+                "image",
+                "video",
+                "gif"
+            ],
+            "x-enum-varnames": [
+                "ImageType",
+                "VideoType",
+                "GifType"
+            ]
         },
         "models.MessageResponse": {
             "type": "object",
