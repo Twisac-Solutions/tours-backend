@@ -309,7 +309,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Creates a new destination",
+                "description": "Creates a new destination with optional cover image",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -322,13 +322,32 @@ const docTemplate = `{
                 "summary": "Create a new destination",
                 "parameters": [
                     {
-                        "description": "Destination object",
-                        "name": "destination",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Destination"
-                        }
+                        "type": "string",
+                        "description": "Destination name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination region",
+                        "name": "region",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination country",
+                        "name": "country",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "file",
@@ -394,7 +413,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Updates an existing destination by ID",
+                "description": "Updates an existing destination",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -414,13 +433,32 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Destination object",
-                        "name": "destination",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Destination"
-                        }
+                        "type": "string",
+                        "description": "Destination name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination region",
+                        "name": "region",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination country",
+                        "name": "country",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "file",
@@ -438,6 +476,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }

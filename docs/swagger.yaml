@@ -619,14 +619,28 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      description: Creates a new destination
+      description: Creates a new destination with optional cover image
       parameters:
-      - description: Destination object
-        in: body
-        name: destination
+      - description: Destination name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Destination'
+        type: string
+      - description: Destination description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Destination region
+        in: formData
+        name: region
+        required: true
+        type: string
+      - description: Destination country
+        in: formData
+        name: country
+        required: true
+        type: string
       - description: Cover image file
         in: formData
         name: coverImage
@@ -699,19 +713,33 @@ paths:
     put:
       consumes:
       - multipart/form-data
-      description: Updates an existing destination by ID
+      description: Updates an existing destination
       parameters:
       - description: Destination ID
         in: path
         name: id
         required: true
         type: string
-      - description: Destination object
-        in: body
-        name: destination
+      - description: Destination name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Destination'
+        type: string
+      - description: Destination description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Destination region
+        in: formData
+        name: region
+        required: true
+        type: string
+      - description: Destination country
+        in: formData
+        name: country
+        required: true
+        type: string
       - description: Cover image file
         in: formData
         name: coverImage
@@ -725,6 +753,10 @@ paths:
             $ref: '#/definitions/models.Destination'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/models.ErrorResponse'
         "500":

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Destination struct {
@@ -20,11 +19,4 @@ type Destination struct {
 	CreatedBy uuid.UUID `json:"createdBy"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-func (m *Destination) BeforeCreate(tx *gorm.DB) (err error) {
-	if m.ID == uuid.Nil {
-		m.ID = uuid.New()
-	}
-	return
 }
