@@ -113,7 +113,7 @@ const docTemplate = `{
             "post": {
                 "description": "Creates a new category",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -131,12 +131,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Category"
                         }
-                    },
-                    {
-                        "type": "file",
-                        "description": "Cover image file",
-                        "name": "coverImage",
-                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -198,7 +192,7 @@ const docTemplate = `{
             "put": {
                 "description": "Updates an existing category by ID",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -1377,10 +1371,22 @@ const docTemplate = `{
         "controllers.AdminLoginResponse": {
             "type": "object",
             "properties": {
-                "admin": {
-                    "$ref": "#/definitions/utils.GoogleUserInfo"
+                "email": {
+                    "type": "string"
                 },
-                "token": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -1399,9 +1405,6 @@ const docTemplate = `{
         "models.Category": {
             "type": "object",
             "properties": {
-                "coverImage": {
-                    "$ref": "#/definitions/models.Media"
-                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -1416,13 +1419,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "type": {
-                    "description": "tour, event, both",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -1873,24 +1869,10 @@ const docTemplate = `{
                 "profile_picture": {
                     "type": "string"
                 },
+                "role": {
+                    "type": "string"
+                },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "utils.GoogleUserInfo": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "picture": {
                     "type": "string"
                 }
             }
