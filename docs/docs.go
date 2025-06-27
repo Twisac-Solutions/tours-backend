@@ -1720,92 +1720,53 @@ const docTemplate = `{
         "models.Tour": {
             "type": "object",
             "properties": {
-                "availability": {
-                    "type": "integer"
-                },
                 "categoryId": {
                     "type": "string"
                 },
                 "coverImage": {
-                    "$ref": "#/definitions/models.Media"
+                    "description": "Inclusions     []string  ` + "`" + `gorm:\"type:text[]\" json:\"inclusions\"` + "`" + `\nExclusions     []string  ` + "`" + `gorm:\"type:text[]\" json:\"exclusions\"` + "`" + `",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Media"
+                        }
+                    ]
                 },
                 "createdAt": {
                     "type": "string"
                 },
                 "createdBy": {
+                    "description": "Gallery        []string  ` + "`" + `gorm:\"type:text[]\" json:\"gallery\"` + "`" + `\nItinerary      []string  ` + "`" + `gorm:\"type:text[]\" json:\"itinerary\"` + "`" + `\nTags           []string  ` + "`" + `gorm:\"type:text[]\" json:\"tags\"` + "`" + `\nReviews        []string  ` + "`" + `gorm:\"type:text[]\" json:\"reviews\"` + "`" + `",
                     "type": "string"
                 },
                 "currency": {
                     "type": "string"
                 },
                 "destinationId": {
+                    "description": "Slug           string    ` + "`" + `gorm:\"uniqueIndex\" json:\"slug\"` + "`" + `",
                     "type": "string"
-                },
-                "durationDays": {
-                    "type": "integer"
                 },
                 "endDate": {
                     "type": "string"
                 },
-                "exclusions": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "fullDescription": {
                     "type": "string"
-                },
-                "gallery": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "groupSize": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "string"
                 },
-                "inclusions": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "isFeatured": {
+                    "description": "GroupSize      int       ` + "`" + `json:\"groupSize\"` + "`" + `\nAvailability   bool       ` + "`" + `json:\"availability\"` + "`" + `",
                     "type": "boolean"
-                },
-                "itinerary": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "pricePerPerson": {
                     "type": "number"
                 },
-                "reviews": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "shortDescription": {
                     "type": "string"
                 },
-                "slug": {
-                    "type": "string"
-                },
                 "startDate": {
+                    "description": "DurationDays   int       ` + "`" + `json:\"durationDays\"` + "`" + `",
                     "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "title": {
                     "type": "string"

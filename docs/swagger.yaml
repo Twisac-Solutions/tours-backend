@@ -214,64 +214,46 @@ definitions:
     type: object
   models.Tour:
     properties:
-      availability:
-        type: integer
       categoryId:
         type: string
       coverImage:
-        $ref: '#/definitions/models.Media'
+        allOf:
+        - $ref: '#/definitions/models.Media'
+        description: |-
+          Inclusions     []string  `gorm:"type:text[]" json:"inclusions"`
+          Exclusions     []string  `gorm:"type:text[]" json:"exclusions"`
       createdAt:
         type: string
       createdBy:
+        description: |-
+          Gallery        []string  `gorm:"type:text[]" json:"gallery"`
+          Itinerary      []string  `gorm:"type:text[]" json:"itinerary"`
+          Tags           []string  `gorm:"type:text[]" json:"tags"`
+          Reviews        []string  `gorm:"type:text[]" json:"reviews"`
         type: string
       currency:
         type: string
       destinationId:
+        description: Slug           string    `gorm:"uniqueIndex" json:"slug"`
         type: string
-      durationDays:
-        type: integer
       endDate:
         type: string
-      exclusions:
-        items:
-          type: string
-        type: array
       fullDescription:
         type: string
-      gallery:
-        items:
-          type: string
-        type: array
-      groupSize:
-        type: integer
       id:
         type: string
-      inclusions:
-        items:
-          type: string
-        type: array
       isFeatured:
+        description: |-
+          GroupSize      int       `json:"groupSize"`
+          Availability   bool       `json:"availability"`
         type: boolean
-      itinerary:
-        items:
-          type: string
-        type: array
       pricePerPerson:
         type: number
-      reviews:
-        items:
-          type: string
-        type: array
       shortDescription:
         type: string
-      slug:
-        type: string
       startDate:
+        description: DurationDays   int       `json:"durationDays"`
         type: string
-      tags:
-        items:
-          type: string
-        type: array
       title:
         type: string
       updatedAt:
