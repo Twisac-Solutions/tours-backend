@@ -20,7 +20,7 @@ type Tour struct {
 	DestinationID uuid.UUID `json:"destinationId"`
 	Category      uuid.UUID `json:"categoryId"`
 	// ShortDesc     string    `json:"shortDescription"`
-	Desc string `gorm:"type:text;not null" json:"fullDescription"`
+	Desc string `gorm:"type:text;not null" json:"description"`
 	// DurationDays   int       `json:"durationDays"`
 	StartDate      time.Time `json:"startDate"`
 	EndDate        time.Time `json:"endDate"`

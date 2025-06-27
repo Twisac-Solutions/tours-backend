@@ -1879,15 +1879,15 @@ const docTemplate = `{
                 "currency": {
                     "type": "string"
                 },
+                "description": {
+                    "description": "ShortDesc     string    ` + "`" + `json:\"shortDescription\"` + "`" + `",
+                    "type": "string"
+                },
                 "destinationId": {
                     "description": "Slug           string    ` + "`" + `gorm:\"uniqueIndex\" json:\"slug\"` + "`" + `",
                     "type": "string"
                 },
                 "endDate": {
-                    "type": "string"
-                },
-                "fullDescription": {
-                    "description": "ShortDesc     string    ` + "`" + `json:\"shortDescription\"` + "`" + `",
                     "type": "string"
                 },
                 "id": {
