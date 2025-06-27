@@ -1024,17 +1024,70 @@ const docTemplate = `{
                 "summary": "Create a new tour",
                 "parameters": [
                     {
-                        "description": "Tour object",
-                        "name": "tour",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Tour"
-                        }
+                        "type": "string",
+                        "description": "Tour title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination ID",
+                        "name": "destinationId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "categoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tour description",
+                        "name": "desc",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date",
+                        "name": "startDate",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date",
+                        "name": "endDate",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price per person",
+                        "name": "pricePerPerson",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Currency",
+                        "name": "currency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is featured",
+                        "name": "isFeatured",
+                        "in": "formData"
                     },
                     {
                         "type": "file",
-                        "description": "Cover image file",
+                        "description": "Cover image",
                         "name": "coverImage",
                         "in": "formData"
                     }
@@ -1096,7 +1149,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Updates an existing tour by ID",
+                "description": "Updates an existing tour",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -1116,17 +1169,70 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Tour object",
-                        "name": "tour",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Tour"
-                        }
+                        "type": "string",
+                        "description": "Tour title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Destination ID",
+                        "name": "destinationId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "categoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tour description",
+                        "name": "desc",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date",
+                        "name": "startDate",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date",
+                        "name": "endDate",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price per person",
+                        "name": "pricePerPerson",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Currency",
+                        "name": "currency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is featured",
+                        "name": "isFeatured",
+                        "in": "formData"
                     },
                     {
                         "type": "file",
-                        "description": "Cover image file",
+                        "description": "Cover image",
                         "name": "coverImage",
                         "in": "formData"
                     }
@@ -1140,6 +1246,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -1646,6 +1758,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.MediaTour": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "tourID": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "models.MediaType": {
             "type": "string",
             "enum": [
@@ -1727,7 +1865,7 @@ const docTemplate = `{
                     "description": "Inclusions     []string  ` + "`" + `gorm:\"type:text[]\" json:\"inclusions\"` + "`" + `\nExclusions     []string  ` + "`" + `gorm:\"type:text[]\" json:\"exclusions\"` + "`" + `",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/models.Media"
+                            "$ref": "#/definitions/models.MediaTour"
                         }
                     ]
                 },
@@ -1749,6 +1887,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "fullDescription": {
+                    "description": "ShortDesc     string    ` + "`" + `json:\"shortDescription\"` + "`" + `",
                     "type": "string"
                 },
                 "id": {
@@ -1760,9 +1899,6 @@ const docTemplate = `{
                 },
                 "pricePerPerson": {
                     "type": "number"
-                },
-                "shortDescription": {
-                    "type": "string"
                 },
                 "startDate": {
                     "description": "DurationDays   int       ` + "`" + `json:\"durationDays\"` + "`" + `",
