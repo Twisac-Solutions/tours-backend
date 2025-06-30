@@ -16,7 +16,8 @@ type Destination struct {
 	// Gallery     []string  `gorm:"type:text[]" json:"gallery"`
 	// Tours     []string  `gorm:"type:text[]" json:"tours"`
 	// Events    []string  `gorm:"type:text[]" json:"events"`
-	CreatedBy uuid.UUID `json:"createdBy"`
+	CreatedBy uuid.UUID `gorm:"type:text;not null" json:"createdBy"`
+	User      User      `gorm:"foreignKey:CreatedBy" json:"user"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
