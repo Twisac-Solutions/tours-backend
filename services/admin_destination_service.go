@@ -7,13 +7,13 @@ import (
 
 func GetAllDestinations() ([]models.Destination, error) {
 	var destinations []models.Destination
-	err := database.DB.Preload("User").Find(&destinations).Error
+	err := database.DB.Preload("User").Preload("CoverImage").Find(&destinations).Error
 	return destinations, err
 }
 
 func GetDestinationByID(id string) (*models.Destination, error) {
 	var destination models.Destination
-	err := database.DB.Preload("User").First(&destination, "id = ?", id).Error
+	err := database.DB.Preload("User").Preload("CoverImage").First(&destination, "id = ?", id).Error
 	return &destination, err
 }
 
