@@ -15,3 +15,9 @@ func GetUserProfile(c *fiber.Ctx) error {
 	}
 	return c.JSON(fiber.Map{"user": user})
 }
+
+func GetUserByID(id string) (*models.User, error) {
+	var user models.User
+	err := database.DB.First(&user, "id = ?", id).Error
+	return &user, err
+}
