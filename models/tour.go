@@ -29,7 +29,9 @@ type Tour struct {
 	// Itinerary      []string  `gorm:"type:text[]" json:"itinerary"`
 	// Tags           []string  `gorm:"type:text[]" json:"tags"`
 	// Reviews        []string  `gorm:"type:text[]" json:"reviews"`
-	CreatedBy uuid.UUID `json:"createdBy"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedBy   uuid.UUID   `json:"createdBy"`
+	Destination Destination `gorm:"foreignKey:DestinationID" json:"destination"`
+	User        User        `gorm:"foreignKey:CreatedBy" json:"user"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
 }
