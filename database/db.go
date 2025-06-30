@@ -17,7 +17,7 @@ func ConnectDB() {
 		log.Fatal("Failed to connect to database!")
 	}
 
-	DB.AutoMigrate(&models.User{}, &models.Category{}, &models.Destination{}, &models.Tour{})
+	DB.AutoMigrate(&models.User{}, &models.Category{}, &models.Destination{}, &models.Tour{}, &models.MediaDestination{})
 	// DB.AutoMigrate(
 	// 		&models.User{},
 	// 		&models.Admin{},
