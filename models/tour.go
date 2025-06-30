@@ -6,13 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type ItineraryItem struct {
-	Day         int    `json:"day"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Image       string `json:"image"`
-}
-
 type Tour struct {
 	ID    uuid.UUID `gorm:"type:text;primaryKey" json:"id"`
 	Title string    `gorm:"type:varchar(255);not null" json:"title"`
