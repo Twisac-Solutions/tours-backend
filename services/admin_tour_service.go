@@ -7,7 +7,8 @@ import (
 
 func GetAllTours() ([]models.Tour, error) {
 	var tours []models.Tour
-	err := database.DB.Preload("Gallery").Preload("Itinerary").Find(&tours).Error
+	// err := database.DB.Preload("Gallery").Preload("Itinerary").Find(&tours).Error
+	err := database.DB.Find(&tours).Error
 	return tours, err
 }
 
