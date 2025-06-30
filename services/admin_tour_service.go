@@ -14,7 +14,7 @@ func GetAllTours() ([]models.Tour, error) {
 
 func GetTourByID(id string) (*models.Tour, error) {
 	var tour models.Tour
-	err := database.DB.Preload("Gallery").Preload("Itinerary").First(&tour, "id = ?", id).Error
+	err := database.DB.First(&tour, "id = ?", id).Error
 	return &tour, err
 }
 
