@@ -91,12 +91,20 @@ func CreateDestination(c *fiber.Ctx) error {
 	}
 
 	destinationID := uuid.New()
+	userUUID := uuid.MustParse(userID)
+	// Get the user
+	user, err := services.GetUserByID(userID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get user details"})
+	}
 	destination := models.Destination{
 		ID:          destinationID,
 		Name:        req.Name,
 		Description: req.Description,
 		Region:      req.Region,
 		Country:     req.Country,
+		CreatedBy:   userUUID,
+		User:        *user,
 	}
 
 	// Handle cover image if provided
@@ -114,7 +122,7 @@ func CreateDestination(c *fiber.Ctx) error {
 		}
 	}
 
-	err := services.CreateDestination(&destination)
+	err = services.CreateDestination(&destination) // Changed from := to =
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create destination"})
 	}
@@ -160,11 +168,18 @@ func UpdateDestination(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Destination not found"})
 	}
 
+	// Get the user
+	user, err := services.GetUserByID(userID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get user details"})
+	}
+
 	// Update fields
 	destination.Name = req.Name
 	destination.Description = req.Description
 	destination.Region = req.Region
 	destination.Country = req.Country
+	destination.User = *user // Update the User relationship
 
 	// Handle cover image if provided
 	if req.CoverImage != nil {
@@ -173,7 +188,7 @@ func UpdateDestination(c *fiber.Ctx) error {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
 		}
 		destination.CoverImage = models.MediaDestination{
-			ID:            uint(time.Now().Unix()), // or use auto-increment
+			ID:            uint(time.Now().Unix()),
 			DestinationID: destination.ID,
 			UserID:        uuid.MustParse(userID),
 			URL:           fileURL,
