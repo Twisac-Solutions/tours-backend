@@ -8,13 +8,13 @@ import (
 func GetAllTours() ([]models.Tour, error) {
 	var tours []models.Tour
 	// err := database.DB.Preload("Gallery").Preload("Itinerary").Find(&tours).Error
-	err := database.DB.Find(&tours).Error
+	err := database.DB.Preload("User").Find(&tours).Error
 	return tours, err
 }
 
 func GetTourByID(id string) (*models.Tour, error) {
 	var tour models.Tour
-	err := database.DB.First(&tour, "id = ?", id).Error
+	err := database.DB.Preload("User").First(&tour, "id = ?", id).Error
 	return &tour, err
 }
 
