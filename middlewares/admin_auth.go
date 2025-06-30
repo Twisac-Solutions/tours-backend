@@ -23,6 +23,7 @@ func AdminOnly(c *fiber.Ctx) error {
 
 	// Set the role in locals for potential use by other middlewares
 	c.Locals("userRole", role)
+	c.Locals("userID", userID)
 	log.Printf("User %s role from JWT: %s", userID, role)
 
 	if role != "admin" && role != "superadmin" {
