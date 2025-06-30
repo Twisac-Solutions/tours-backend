@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"mime/multipart"
 	"time"
 
@@ -12,16 +13,16 @@ import (
 )
 
 type CreateTourRequest struct {
-	Title          string                `form:"title"`
-	DestinationID  string                `form:"destinationId"`
-	CategoryID     string                `form:"categoryId"`
-	Description    string                `form:"desc"`
-	StartDate      time.Time             `form:"startDate"`
-	EndDate        time.Time             `form:"endDate"`
-	PricePerPerson float64               `form:"pricePerPerson"`
-	Currency       string                `form:"currency"`
-	IsFeatured     bool                  `form:"isFeatured"`
-	CoverImage     *multipart.FileHeader `form:"coverImage"`
+	Title          string                `json:"title" form:"title" required:"true"`
+	DestinationID  string                `json:"destinationId" form:"destinationId" required:"true"`
+	CategoryID     string                `json:"categoryId" form:"categoryId" required:"true"`
+	Description    string                `json:"desc" form:"desc" required:"true"`
+	CoverImage     *multipart.FileHeader `json:"coverImage" form:"coverImage"`
+	StartDate      time.Time             `json:"startDate" form:"startDate" required:"true"`
+	EndDate        time.Time             `json:"endDate" form:"endDate" required:"true"`
+	PricePerPerson float64               `json:"pricePerPerson" form:"pricePerPerson" required:"true" min:"0"`
+	Currency       string                `json:"currency" form:"currency" required:"true"`
+	IsFeatured     bool                  `json:"isFeatured" form:"isFeatured"`
 }
 
 type UpdateTourRequest struct {
@@ -35,6 +36,29 @@ type UpdateTourRequest struct {
 	Currency       string                `form:"currency"`
 	IsFeatured     bool                  `form:"isFeatured"`
 	CoverImage     *multipart.FileHeader `form:"coverImage"`
+}
+
+type ValidationError struct {
+	Field string `json:"field"`
+	Error string `json:"error"`
+}
+
+func ValidateCreateTourRequest(req CreateTourRequest) utils.ValidationResult {
+	validator := utils.NewValidator()
+
+	// Add custom validators
+	validator.AddCustomValidator("validateDates", func(i interface{}) error {
+		req, ok := i.(CreateTourRequest)
+		if !ok {
+			return fmt.Errorf("invalid type for date validation")
+		}
+		if req.EndDate.Before(req.StartDate) {
+			return fmt.Errorf("end date must be after start date")
+		}
+		return nil
+	})
+
+	return validator.Validate(req)
 }
 
 // GetAllTours godoc
@@ -98,11 +122,27 @@ func CreateTour(c *fiber.Ctx) error {
 			"error": "Invalid request body: " + err.Error(),
 		})
 	}
+	validationResult := ValidateCreateTourRequest(req)
+	if !validationResult.Valid {
+		return c.Status(400).JSON(fiber.Map{
+			"error":   "Validation failed",
+			"details": validationResult.Errors,
+		})
+	}
 
 	// Get user ID from context
 	userID, ok := c.Locals("userID").(string)
 	if !ok {
 		return c.Status(500).JSON(fiber.Map{"error": "User ID not found in context"})
+	}
+	userUUID := uuid.MustParse(userID)
+	user, err := services.GetUserByID(userID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get user details"})
+	}
+	destination, err := services.GetDestinationByID(req.DestinationID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get Destination"})
 	}
 
 	tourID := uuid.New()
@@ -110,6 +150,7 @@ func CreateTour(c *fiber.Ctx) error {
 		ID:             tourID,
 		Title:          req.Title,
 		DestinationID:  uuid.MustParse(req.DestinationID),
+		Destination:    *destination,
 		Category:       uuid.MustParse(req.CategoryID),
 		Desc:           req.Description,
 		StartDate:      req.StartDate,
@@ -117,7 +158,8 @@ func CreateTour(c *fiber.Ctx) error {
 		PricePerPerson: req.PricePerPerson,
 		Currency:       req.Currency,
 		IsFeatured:     req.IsFeatured,
-		CreatedBy:      uuid.MustParse(userID),
+		CreatedBy:      userUUID,
+		User:           *user,
 	}
 
 	// Handle cover image if provided
@@ -135,7 +177,7 @@ func CreateTour(c *fiber.Ctx) error {
 		}
 	}
 
-	err := services.CreateTour(&tour)
+	err = services.CreateTour(&tour)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create tour"})
 	}
@@ -179,6 +221,11 @@ func UpdateTour(c *fiber.Ctx) error {
 	if !ok {
 		return c.Status(500).JSON(fiber.Map{"error": "User ID not found in context"})
 	}
+	userUUID := uuid.MustParse(userID)
+	user, err := services.GetUserByID(userID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get user details"})
+	}
 
 	// Get existing tour
 	tour, err := services.GetTourByID(id)
@@ -196,6 +243,8 @@ func UpdateTour(c *fiber.Ctx) error {
 	tour.PricePerPerson = req.PricePerPerson
 	tour.Currency = req.Currency
 	tour.IsFeatured = req.IsFeatured
+	tour.CreatedBy = userUUID
+	tour.User = *user
 
 	// Handle cover image if provided
 	if req.CoverImage != nil {
