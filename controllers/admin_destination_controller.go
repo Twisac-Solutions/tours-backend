@@ -116,7 +116,7 @@ func CreateDestination(c *fiber.Ctx) error {
 		destination.CoverImage = models.MediaDestination{
 			ID:            uint(time.Now().Unix()), // or use auto-increment
 			DestinationID: destinationID,
-			UserID:        uuid.MustParse(userID),
+			UserID:        userUUID,
 			URL:           fileURL,
 			Type:          destination.CoverImage.Type,
 		}
