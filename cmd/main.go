@@ -27,7 +27,9 @@ func main() {
 		log.Fatalf("Failed to initialize Cloudinary: %v", err)
 	}
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 10 * 1024 * 1024, // 10MB limit
+	})
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Static("/docs", "./docs")
 	routes.SetupRoutes(app)
