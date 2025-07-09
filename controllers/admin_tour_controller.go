@@ -164,7 +164,7 @@ func CreateTour(c *fiber.Ctx) error {
 
 	// Handle cover image if provided
 	if req.CoverImage != nil {
-		fileURL, err := utils.SaveFile([]*multipart.FileHeader{req.CoverImage})
+		fileURL, err := utils.UploadImageToCloudinary(req.CoverImage, "tours")
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
 		}
@@ -248,7 +248,7 @@ func UpdateTour(c *fiber.Ctx) error {
 
 	// Handle cover image if provided
 	if req.CoverImage != nil {
-		fileURL, err := utils.SaveFile([]*multipart.FileHeader{req.CoverImage})
+		fileURL, err := utils.UploadImageToCloudinary(req.CoverImage, "tours")
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
 		}
