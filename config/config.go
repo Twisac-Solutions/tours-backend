@@ -12,11 +12,10 @@ var (
 	DBPath string
 
 	// Google OAuth credentials and redirect URL
-	GoogleClientID      string
-	GoogleClientSecret  string
-	GoogleRedirectURL   string
-	UploadcarePublicKey string
-	UploadcareSecretKey string
+	GoogleClientID     string
+	GoogleClientSecret string
+	GoogleRedirectURL  string
+	CloudinaryURL      string
 
 	// JWT secret key
 	JWTSecret string
@@ -37,8 +36,7 @@ func InitConfig() {
 	GoogleClientID = os.Getenv("GOOGLE_CLIENT_ID")
 	GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	GoogleRedirectURL = os.Getenv("GOOGLE_REDIRECT_URL")
-	UploadcarePublicKey = os.Getenv("UPLOADCARE_PUBLIC_KEY")
-	UploadcareSecretKey = os.Getenv("UPLOADCARE_SECRET_KEY")
+	CloudinaryURL = os.Getenv("CLOUDINARY_URL")
 
 	JWTSecret = os.Getenv("JWT_SECRET")
 	if JWTSecret == "" {

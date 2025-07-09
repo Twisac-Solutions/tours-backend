@@ -7,6 +7,7 @@ import (
 	"github.com/Twisac-Solutions/tours-backend/database"
 	_ "github.com/Twisac-Solutions/tours-backend/docs"
 	"github.com/Twisac-Solutions/tours-backend/routes"
+	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
@@ -21,8 +22,14 @@ func main() {
 	database.ConnectDB()
 	database.SeedSuperAdmin()
 
+	err := utils.InitCloudinary()
+	if err != nil {
+		log.Fatalf("Failed to initialize Cloudinary: %v", err)
+	}
+
 	app := fiber.New()
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	app.Static("/docs", "./docs")
 	routes.SetupRoutes(app)
 	routes.RegisterAdminRoutes(app)
 
