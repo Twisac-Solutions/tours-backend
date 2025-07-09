@@ -2,32 +2,16 @@ package controllers
 
 import (
 	"log"
-	"mime/multipart"
 	"time"
 
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/requests"
 	"github.com/Twisac-Solutions/tours-backend/responses"
 	"github.com/Twisac-Solutions/tours-backend/services"
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
-
-type CreateDestinationRequest struct {
-	Name        string                `form:"name"`
-	Description string                `form:"description"`
-	Region      string                `form:"region"`
-	Country     string                `form:"country"`
-	CoverImage  *multipart.FileHeader `form:"coverImage"`
-}
-
-type UpdateDestinationRequest struct {
-	Name        string                `form:"name"`
-	Description string                `form:"description"`
-	Region      string                `form:"region"`
-	Country     string                `form:"country"`
-	CoverImage  *multipart.FileHeader `form:"coverImage"`
-}
 
 // GetAllDestinations godoc
 // @Summary      Get all destinations
@@ -85,7 +69,7 @@ func GetDestinationByID(c *fiber.Ctx) error {
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/destinations [post]
 func CreateDestination(c *fiber.Ctx) error {
-	var req CreateDestinationRequest
+	var req requests.CreateDestinationRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Invalid request body: " + err.Error(),
@@ -163,7 +147,7 @@ func CreateDestination(c *fiber.Ctx) error {
 // @Router       /admin/destinations/{id} [put]
 func UpdateDestination(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var req UpdateDestinationRequest
+	var req requests.UpdateDestinationRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Invalid request body: " + err.Error(),

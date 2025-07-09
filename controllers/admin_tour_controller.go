@@ -1,67 +1,17 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
-	"mime/multipart"
 	"time"
 
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/requests"
 	"github.com/Twisac-Solutions/tours-backend/responses"
 	"github.com/Twisac-Solutions/tours-backend/services"
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
-
-type CreateTourRequest struct {
-	Title          string                `json:"title" form:"title" required:"true"`
-	DestinationID  string                `json:"destinationId" form:"destinationId" required:"true"`
-	CategoryID     string                `json:"categoryId" form:"categoryId" required:"true"`
-	Description    string                `json:"desc" form:"desc" required:"true"`
-	CoverImage     *multipart.FileHeader `json:"coverImage" form:"coverImage"`
-	StartDate      time.Time             `json:"startDate" form:"startDate" required:"true"`
-	EndDate        time.Time             `json:"endDate" form:"endDate" required:"true"`
-	PricePerPerson float64               `json:"pricePerPerson" form:"pricePerPerson" required:"true" min:"0"`
-	Currency       string                `json:"currency" form:"currency" required:"true"`
-	IsFeatured     bool                  `json:"isFeatured" form:"isFeatured"`
-}
-
-type UpdateTourRequest struct {
-	Title          string                `form:"title"`
-	DestinationID  string                `form:"destinationId"`
-	CategoryID     string                `form:"categoryId"`
-	Description    string                `form:"desc"`
-	StartDate      time.Time             `form:"startDate"`
-	EndDate        time.Time             `form:"endDate"`
-	PricePerPerson float64               `form:"pricePerPerson"`
-	Currency       string                `form:"currency"`
-	IsFeatured     bool                  `form:"isFeatured"`
-	CoverImage     *multipart.FileHeader `form:"coverImage"`
-}
-
-type ValidationError struct {
-	Field string `json:"field"`
-	Error string `json:"error"`
-}
-
-func ValidateCreateTourRequest(req CreateTourRequest) utils.ValidationResult {
-	validator := utils.NewValidator()
-
-	// Add custom validators
-	validator.AddCustomValidator("validateDates", func(i interface{}) error {
-		req, ok := i.(CreateTourRequest)
-		if !ok {
-			return fmt.Errorf("invalid type for date validation")
-		}
-		if req.EndDate.Before(req.StartDate) {
-			return fmt.Errorf("end date must be after start date")
-		}
-		return nil
-	})
-
-	return validator.Validate(req)
-}
 
 // GetAllTours godoc
 // @Summary      Get all tours
@@ -194,13 +144,13 @@ func CreateTour(c *fiber.Ctx) error {
 		log.Println("Form fields:", form.Value)
 		log.Println("Form files:", form.File)
 	}
-	var req CreateTourRequest
+	var req requests.CreateTourRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Invalid request body: " + err.Error(),
 		})
 	}
-	validationResult := ValidateCreateTourRequest(req)
+	validationResult := requests.ValidateCreateTourRequest(req)
 	if !validationResult.Valid {
 		return c.Status(400).JSON(fiber.Map{
 			"error":   "Validation failed",
@@ -320,7 +270,7 @@ func CreateTour(c *fiber.Ctx) error {
 // @Router       /admin/tours/{id} [put]
 func UpdateTour(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var req UpdateTourRequest
+	var req requests.UpdateTourRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Invalid request body: " + err.Error(),
