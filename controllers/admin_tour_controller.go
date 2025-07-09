@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"mime/multipart"
 	"time"
 
@@ -116,6 +117,17 @@ func GetTourByID(c *fiber.Ctx) error {
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/tours [post]
 func CreateTour(c *fiber.Ctx) error {
+	// Debug incoming request
+	log.Println("Content-Type:", c.Get("Content-Type"))
+
+	// Parse the multipart form directly to see if we can get the file
+	form, err := c.MultipartForm()
+	if err != nil {
+		log.Println("Error parsing multipart form:", err)
+	} else {
+		log.Println("Form fields:", form.Value)
+		log.Println("Form files:", form.File)
+	}
 	var req CreateTourRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{
@@ -162,12 +174,15 @@ func CreateTour(c *fiber.Ctx) error {
 		User:           *user,
 	}
 
-	// Handle cover image if provided
-	if req.CoverImage != nil {
-		fileURL, err := utils.UploadImageToCloudinary(req.CoverImage, "tours")
+	// Handle cover image separately from the request body parsing
+	file, err := c.FormFile("coverImage")
+	if err == nil && file != nil {
+		log.Println("Cover Image Found manually:", file.Filename, file.Size)
+		fileURL, err := utils.UploadImageToCloudinary(file, "tours")
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
+			return c.Status(500).JSON(fiber.Map{"error": "Failed to upload cover image to Cloudinary"})
 		}
+		tourID := uuid.New()
 		tour.CoverImage = models.MediaTour{
 			TourID:    tourID,
 			UserID:    uuid.MustParse(userID),
@@ -175,6 +190,8 @@ func CreateTour(c *fiber.Ctx) error {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
+	} else if err != nil {
+		log.Println("Error getting cover image:", err)
 	}
 
 	err = services.CreateTour(&tour)
