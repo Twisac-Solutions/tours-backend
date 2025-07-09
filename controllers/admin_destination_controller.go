@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"log"
 	"mime/multipart"
 	"time"
 
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/responses"
 	"github.com/Twisac-Solutions/tours-backend/services"
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/gofiber/fiber/v2"
@@ -32,7 +34,7 @@ type UpdateDestinationRequest struct {
 // @Description  Retrieves a list of all destinations
 // @Tags         admin_destinations
 // @Produce      json
-// @Success      200  {array}   models.Destination
+// @Success      200  {array}   responses.DestinationResponse
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/destinations [get]
 func GetAllDestinations(c *fiber.Ctx) error {
@@ -40,7 +42,13 @@ func GetAllDestinations(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve destinations"})
 	}
-	return c.JSON(destinations)
+
+	response := make([]responses.DestinationResponse, len(destinations))
+	for i, d := range destinations {
+		response[i] = responses.ToDestinationResponse(d)
+	}
+
+	return c.JSON(response)
 }
 
 // GetDestinationByID godoc
@@ -49,7 +57,7 @@ func GetAllDestinations(c *fiber.Ctx) error {
 // @Tags         admin_destinations
 // @Produce      json
 // @Param        id   path      string  true  "Destination ID"
-// @Success      200  {object}  models.Destination
+// @Success      200  {object}  responses.DestinationResponse
 // @Failure      404  {object}  models.ErrorResponse
 // @Router       /admin/destinations/{id} [get]
 func GetDestinationByID(c *fiber.Ctx) error {
@@ -58,7 +66,7 @@ func GetDestinationByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Destination not found"})
 	}
-	return c.JSON(destination)
+	return c.JSON(responses.ToDestinationResponse(*destination))
 }
 
 // CreateDestination godoc
@@ -72,7 +80,7 @@ func GetDestinationByID(c *fiber.Ctx) error {
 // @Param        region      formData    string  true   "Destination region"
 // @Param        country     formData    string  true   "Destination country"
 // @Param        coverImage  formData    file    false  "Cover image file"
-// @Success      200  {object}  models.Destination
+// @Success      200  {object}  responses.DestinationResponse
 // @Failure      400  {object}  models.ErrorResponse
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/destinations [post]
@@ -108,8 +116,10 @@ func CreateDestination(c *fiber.Ctx) error {
 	}
 
 	// Handle cover image if provided
-	if req.CoverImage != nil {
-		fileURL, err := utils.SaveFile([]*multipart.FileHeader{req.CoverImage})
+	file, err := c.FormFile("coverImage")
+	if err == nil && file != nil {
+		log.Println("Destination Cover Image Found manually:", file.Filename, file.Size)
+		fileURL, err := utils.UploadImageToCloudinary(file, "destinations")
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
 		}
@@ -122,12 +132,12 @@ func CreateDestination(c *fiber.Ctx) error {
 		}
 	}
 
-	err = services.CreateDestination(&destination) // Changed from := to =
+	createdDestination, err := services.GetDestinationByID(destination.ID.String())
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to create destination"})
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve created destination"})
 	}
 
-	return c.JSON(destination)
+	return c.JSON(responses.ToDestinationResponse(*createdDestination))
 }
 
 // UpdateDestination godoc
@@ -142,7 +152,7 @@ func CreateDestination(c *fiber.Ctx) error {
 // @Param        region      formData    string  true   "Destination region"
 // @Param        country     formData    string  true   "Destination country"
 // @Param        coverImage  formData    file    false  "Cover image file"
-// @Success      200  {object}  models.Destination
+// @Success      200  {object}  responses.DestinationResponse
 // @Failure      400  {object}  models.ErrorResponse
 // @Failure      404  {object}  models.ErrorResponse
 // @Failure      500  {object}  models.ErrorResponse
@@ -182,8 +192,10 @@ func UpdateDestination(c *fiber.Ctx) error {
 	destination.User = *user // Update the User relationship
 
 	// Handle cover image if provided
-	if req.CoverImage != nil {
-		fileURL, err := utils.SaveFile([]*multipart.FileHeader{req.CoverImage})
+	file, err := c.FormFile("coverImage")
+	if err == nil && file != nil {
+		log.Println("Destination Cover Image Found manually:", file.Filename, file.Size)
+		fileURL, err := utils.UploadImageToCloudinary(file, "destinations")
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to save cover image"})
 		}
@@ -201,7 +213,7 @@ func UpdateDestination(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update destination"})
 	}
 
-	return c.JSON(destination)
+	return c.JSON(responses.ToDestinationResponse(*destination))
 }
 
 // DeleteDestination godoc
