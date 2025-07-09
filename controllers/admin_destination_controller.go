@@ -131,6 +131,10 @@ func CreateDestination(c *fiber.Ctx) error {
 			Type:          destination.CoverImage.Type,
 		}
 	}
+	err = services.CreateDestination(&destination) // Changed from := to =
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to create destination"})
+	}
 
 	createdDestination, err := services.GetDestinationByID(destination.ID.String())
 	if err != nil {
