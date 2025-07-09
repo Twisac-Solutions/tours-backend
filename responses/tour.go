@@ -13,10 +13,8 @@ type TourResponse struct {
 	PricePerPerson float64   `json:"pricePerPerson"`
 	Currency       string    `json:"currency"`
 	IsFeatured     bool      `json:"isFeatured"`
-	CoverImage     struct {
-		URL string `json:"URL"`
-	} `json:"coverImage"`
-	Destination struct {
+	CoverImage     string    `json:"coverImage"`
+	Destination    struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 	} `json:"destination"`
@@ -24,10 +22,8 @@ type TourResponse struct {
 		ID           string `json:"id"`
 		Name         string `json:"name"`
 		Username     string `json:"username"`
-		ProfileImage struct {
-			URL string `json:"url"`
-		} `json:"profileImage"`
-		Role string `json:"role"`
+		ProfileImage string `json:"profileImage"`
+		Role         string `json:"role"`
 	} `json:"user"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
