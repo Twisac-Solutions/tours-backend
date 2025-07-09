@@ -68,7 +68,7 @@ func ValidateCreateTourRequest(req CreateTourRequest) utils.ValidationResult {
 // @Description  Retrieves a list of all tours
 // @Tags         admin_tours
 // @Produce      json
-// @Success      200  {array}   models.Tour
+// @Success      200  {array}   responses.TourResponse
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/tours [get]
 func GetAllTours(c *fiber.Ctx) error {
@@ -122,7 +122,7 @@ func GetAllTours(c *fiber.Ctx) error {
 // @Tags         tours
 // @Produce      json
 // @Param        id   path      string  true  "Tour ID"
-// @Success      200  {object}  models.Tour
+// @Success      200  {object}  responses.TourResponse
 // @Failure      404  {object}  models.ErrorResponse
 // @Router       /admin/tours/{id} [get]
 func GetTourByID(c *fiber.Ctx) error {
@@ -178,7 +178,7 @@ func GetTourByID(c *fiber.Ctx) error {
 // @Param        currency       formData    string  true   "Currency"
 // @Param        isFeatured     formData    boolean false  "Is featured"
 // @Param        coverImage     formData    file    false  "Cover image"
-// @Success      200  {object}  models.Tour
+// @Success      200  {object}  responses.TourResponse
 // @Failure      400  {object}  models.ErrorResponse
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/tours [post]
@@ -313,7 +313,7 @@ func CreateTour(c *fiber.Ctx) error {
 // @Param        currency       formData    string  true   "Currency"
 // @Param        isFeatured     formData    boolean false  "Is featured"
 // @Param        coverImage     formData    file    false  "Cover image"
-// @Success      200  {object}  models.Tour
+// @Success      200  {object}  responses.TourResponse
 // @Failure      400  {object}  models.ErrorResponse
 // @Failure      404  {object}  models.ErrorResponse
 // @Failure      500  {object}  models.ErrorResponse
