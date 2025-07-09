@@ -28,42 +28,14 @@ func GetAllTours(c *fiber.Ctx) error {
 	}
 
 	// Create a slice to hold the responses
-	tourResponses := make([]responses.TourResponse, 0, len(tours))
+	tourResponse := make([]responses.TourResponse, 0, len(tours))
 
 	// Format each tour into the response format
-	for _, tour := range tours {
-		response := responses.TourResponse{
-			ID:             tour.ID.String(),
-			Title:          tour.Title,
-			CategoryID:     tour.Category.String(),
-			Description:    tour.Desc,
-			StartDate:      tour.StartDate,
-			EndDate:        tour.EndDate,
-			PricePerPerson: tour.PricePerPerson,
-			Currency:       tour.Currency,
-			IsFeatured:     tour.IsFeatured,
-			CreatedAt:      tour.CreatedAt,
-			UpdatedAt:      tour.UpdatedAt,
-		}
-
-		// Set the cover image URL
-		response.CoverImage = tour.CoverImage.URL
-
-		// Set destination details
-		response.Destination.ID = tour.Destination.ID.String()
-		response.Destination.Name = tour.Destination.Name
-
-		// Set user details
-		response.User.ID = tour.User.ID.String()
-		response.User.Name = tour.User.Name
-		response.User.Username = tour.User.Username
-		response.User.ProfileImage = "" // Set according to your User model structure
-		response.User.Role = tour.User.Role
-
-		tourResponses = append(tourResponses, response)
+	for i, d := range tours {
+		tourResponse[i] = responses.ToTourResponse(d)
 	}
 
-	return c.JSON(tourResponses)
+	return c.JSON(tourResponse)
 }
 
 // GetTourByID godoc
@@ -81,35 +53,7 @@ func GetTourByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Tour not found"})
 	}
-	response := responses.TourResponse{
-		ID:             tour.ID.String(),
-		Title:          tour.Title,
-		CategoryID:     tour.Category.String(),
-		Description:    tour.Desc,
-		StartDate:      tour.StartDate,
-		EndDate:        tour.EndDate,
-		PricePerPerson: tour.PricePerPerson,
-		Currency:       tour.Currency,
-		IsFeatured:     tour.IsFeatured,
-		CreatedAt:      tour.CreatedAt,
-		UpdatedAt:      tour.UpdatedAt,
-	}
-
-	// Set the cover image URL
-	response.CoverImage = tour.CoverImage.URL
-
-	// Set destination details
-	response.Destination.ID = tour.Destination.ID.String()
-	response.Destination.Name = tour.Destination.Name
-
-	// Set user details
-	response.User.ID = tour.User.ID.String()
-	response.User.Name = tour.User.Name
-	response.User.Username = tour.User.Username
-	response.User.ProfileImage = "" // Set according to your User model structure
-	response.User.Role = tour.User.Role
-
-	return c.JSON(response)
+	return c.JSON(responses.ToTourResponse(*tour))
 }
 
 // CreateTour godoc
@@ -214,36 +158,12 @@ func CreateTour(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create tour"})
 	}
-
-	response := responses.TourResponse{
-		ID:             tour.ID.String(),
-		Title:          tour.Title,
-		CategoryID:     tour.Category.String(),
-		Description:    tour.Desc,
-		StartDate:      tour.StartDate,
-		EndDate:        tour.EndDate,
-		PricePerPerson: tour.PricePerPerson,
-		Currency:       tour.Currency,
-		IsFeatured:     tour.IsFeatured,
-		CreatedAt:      tour.CreatedAt,
-		UpdatedAt:      tour.UpdatedAt,
+	createdTour, err := services.GetTourByID(tour.ID.String())
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve created tour"})
 	}
 
-	// Set the cover image URL
-	response.CoverImage = tour.CoverImage.URL
-
-	// Set destination details
-	response.Destination.ID = tour.Destination.ID.String()
-	response.Destination.Name = tour.Destination.Name
-
-	// Set user details
-	response.User.ID = tour.User.ID.String()
-	response.User.Name = tour.User.Name
-	response.User.Username = tour.User.Username
-	response.User.ProfileImage = "" // Set according to your User model structure
-	response.User.Role = tour.User.Role
-
-	return c.JSON(response)
+	return c.JSON(responses.ToTourResponse(*createdTour))
 }
 
 // UpdateTour godoc
@@ -327,35 +247,7 @@ func UpdateTour(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update tour"})
 	}
 
-	response := responses.TourResponse{
-		ID:             tour.ID.String(),
-		Title:          tour.Title,
-		CategoryID:     tour.Category.String(),
-		Description:    tour.Desc,
-		StartDate:      tour.StartDate,
-		EndDate:        tour.EndDate,
-		PricePerPerson: tour.PricePerPerson,
-		Currency:       tour.Currency,
-		IsFeatured:     tour.IsFeatured,
-		CreatedAt:      tour.CreatedAt,
-		UpdatedAt:      tour.UpdatedAt,
-	}
-
-	// Set the cover image URL
-	response.CoverImage = tour.CoverImage.URL
-
-	// Set destination details
-	response.Destination.ID = tour.Destination.ID.String()
-	response.Destination.Name = tour.Destination.Name
-
-	// Set user details
-	response.User.ID = tour.User.ID.String()
-	response.User.Name = tour.User.Name
-	response.User.Username = tour.User.Username
-	response.User.ProfileImage = "" // Set according to your User model structure
-	response.User.Role = tour.User.Role
-
-	return c.JSON(response)
+	return c.JSON(responses.ToTourResponse(*tour))
 }
 
 // DeleteTour godoc
