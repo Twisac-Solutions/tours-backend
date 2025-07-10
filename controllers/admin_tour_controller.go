@@ -18,24 +18,24 @@ import (
 // @Description  Retrieves a list of all tours
 // @Tags         admin_tours
 // @Produce      json
-// @Success      200  {array}   responses.TourResponse
+// @Param        page   query    integer  false  "Page number (default: 1)"
+// @Param        limit  query    integer  false  "Limit per page (default: 10)"
+// @Success      200  {object}   object{data=[]responses.TourResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/tours [get]
 func GetAllTours(c *fiber.Ctx) error {
-	tours, err := services.GetAllTours()
+	tours, totalCount, err := services.GetAllTours(c)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve tours"})
 	}
 
-	// Create a slice to hold the responses
-	tourResponse := make([]responses.TourResponse, 0, len(tours))
-
-	// Format each tour into the response format
-	for i, d := range tours {
-		tourResponse[i] = responses.ToTourResponse(d)
+	// Convert tours to response format
+	tourResponses := make([]responses.TourResponse, len(tours))
+	for i, tour := range tours {
+		tourResponses[i] = responses.ToTourResponse(tour)
 	}
 
-	return c.JSON(tourResponse)
+	return c.JSON(utils.PaginationResponse(c, tourResponses, totalCount))
 }
 
 // GetTourByID godoc

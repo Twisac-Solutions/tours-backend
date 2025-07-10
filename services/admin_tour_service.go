@@ -3,13 +3,28 @@ package services
 import (
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/garrettladley/fiberpaginate/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
-func GetAllTours() ([]models.Tour, error) {
+func GetAllTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
 	var tours []models.Tour
+	var totalCount int64
+
+	// Get pagination info from context
+	pageInfo, ok := fiberpaginate.FromContext(c)
+	if !ok {
+		// If pagination info is not available, use default values
+		pageInfo = &fiberpaginate.PageInfo{
+			Page:  1,
+			Limit: 10,
+		}
+	}
+	database.DB.Model(&models.Tour{}).Count(&totalCount)
 	// err := database.DB.Preload("Gallery").Preload("Itinerary").Find(&tours).Error
-	err := database.DB.Preload("User").Preload("Destination").Preload("CoverImage").Find(&tours).Error
-	return tours, err
+	err := database.DB.Offset(pageInfo.Start()).
+		Limit(pageInfo.Limit).Preload("User").Preload("Destination").Preload("CoverImage").Find(&tours).Error
+	return tours, totalCount, err
 }
 
 func GetTourByID(id string) (*models.Tour, error) {

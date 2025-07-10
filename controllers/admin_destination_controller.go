@@ -18,11 +18,13 @@ import (
 // @Description  Retrieves a list of all destinations
 // @Tags         admin_destinations
 // @Produce      json
-// @Success      200  {array}   responses.DestinationResponse
+// @Param        page   query    integer  false  "Page number (default: 1)"
+// @Param        limit  query    integer  false  "Limit per page (default: 10)"
+// @Success      200  {object}   object{data=[]responses.DestinationResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
 // @Failure      500  {object}  models.ErrorResponse
 // @Router       /admin/destinations [get]
 func GetAllDestinations(c *fiber.Ctx) error {
-	destinations, err := services.GetAllDestinations()
+	destinations, totalCount, err := services.GetAllDestinations(c)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve destinations"})
 	}
@@ -32,7 +34,7 @@ func GetAllDestinations(c *fiber.Ctx) error {
 		response[i] = responses.ToDestinationResponse(d)
 	}
 
-	return c.JSON(response)
+	return c.JSON(utils.PaginationResponse(c, response, totalCount))
 }
 
 // GetDestinationByID godoc
