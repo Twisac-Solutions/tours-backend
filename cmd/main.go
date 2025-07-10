@@ -8,6 +8,7 @@ import (
 	_ "github.com/Twisac-Solutions/tours-backend/docs"
 	"github.com/Twisac-Solutions/tours-backend/routes"
 	"github.com/Twisac-Solutions/tours-backend/utils"
+	"github.com/garrettladley/fiberpaginate/v2"
 	"github.com/gofiber/fiber/v2"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
@@ -32,6 +33,7 @@ func main() {
 	})
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Static("/docs", "./docs")
+	app.Use(fiberpaginate.New())
 	routes.SetupRoutes(app)
 	routes.RegisterAdminRoutes(app)
 
