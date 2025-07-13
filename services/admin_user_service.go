@@ -35,3 +35,17 @@ func GetAllUsers(c *fiber.Ctx) ([]responses.UserResponse, int64, error) {
 	}
 	return out, total, nil
 }
+
+func CreateUser(u *models.User) error {
+	return database.DB.Create(u).Error
+}
+
+func UpdateUser(id string, updates *models.User) error {
+	return database.DB.Model(&models.User{}).
+		Where("id = ?", id).
+		Updates(updates).Error
+}
+
+func DeleteUser(id string) error {
+	return database.DB.Delete(&models.User{}, "id = ?", id).Error
+}
