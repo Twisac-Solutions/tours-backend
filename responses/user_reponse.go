@@ -20,6 +20,7 @@ type UserResponse struct {
 	Language       string    `json:"language"`
 	IsVerified     bool      `json:"is_verified"`
 	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 // Converts a models.User into the public response.
@@ -38,5 +39,6 @@ func ToUserResponse(u models.User) UserResponse {
 		Language:       u.Language,
 		IsVerified:     u.IsVerified,
 		CreatedAt:      u.CreatedAt,
+		UpdatedAt:      u.UpdatedAt,
 	}
 }

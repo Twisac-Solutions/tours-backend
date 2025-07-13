@@ -12,7 +12,7 @@ import (
 // GetCurrentAdminProfile godoc
 // @Summary      Get current admin profile
 // @Description  Returns the profile of the logged-in admin
-// @Tags         admin_user
+// @Tags         admin_users
 // @Produce      json
 // @Success      200  {object} models.User
 // @Failure      401  {object} models.ErrorResponse
@@ -43,7 +43,7 @@ func GetAllUsers(c *fiber.Ctx) error {
 // GetUserByID godoc
 // @Summary      Get user by id
 // @Description  Returns one user
-// @Tags         admin_user
+// @Tags         admin_users
 // @Produce      json
 // @Param        id  path  string  true  "User ID"
 // @Success      200  {object} responses.UserResponse
@@ -68,7 +68,7 @@ type createUserRequest struct {
 // CreateUser godoc
 // @Summary      Create user
 // @Description  Admin creates a new user
-// @Tags         admin_user
+// @Tags         admin_users
 // @Accept       json
 // @Produce      json
 // @Param        body  body  createUserRequest  true  "User data"
@@ -106,7 +106,7 @@ type updateUserRequest struct {
 // UpdateUser godoc
 // @Summary      Update user
 // @Description  Admin updates an existing user
-// @Tags         admin_user
+// @Tags         admin_users
 // @Accept       json
 // @Produce      json
 // @Param        id    path  string             true  "User ID"
@@ -146,7 +146,7 @@ func UpdateUser(c *fiber.Ctx) error {
 // DeleteUser godoc
 // @Summary      Delete user
 // @Description  Admin deletes a user
-// @Tags         admin_user
+// @Tags         admin_users
 // @Param        id  path  string  true  "User ID"
 // @Success      204 "No Content"
 // @Failure      404  {object} models.ErrorResponse
