@@ -2,8 +2,10 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"github.com/Twisac-Solutions/tours-backend/models"
+	libsql "github.com/ytsruh/gorm-libsql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -11,12 +13,27 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	var err error
-	DB, err = gorm.Open(sqlite.Open("tour.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to database!")
+	var dialector gorm.Dialector
+
+	if dsn := os.Getenv("DATABASE_URL"); dsn != "" {
+		dialector = libsql.New(libsql.Config{
+			DSN:        dsn,
+			DriverName: "libsql",
+		})
+	} else {
+		// Local SQLite fallback
+		dsn = os.Getenv("DB_PATH")
+		if dsn == "" {
+			dsn = "tour.db"
+		}
+		dialector = sqlite.Open(dsn)
 	}
 
+	var err error
+	DB, err = gorm.Open(dialector, &gorm.Config{})
+	if err != nil {
+		log.Fatalf("cannot connect to database: %v", err)
+	}
 	DB.AutoMigrate(&models.User{},
 		&models.Category{},
 		&models.Destination{},
