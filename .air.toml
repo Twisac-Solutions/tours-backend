@@ -7,7 +7,7 @@ cmd = "swag init --generalInfo ./cmd/main.go --output docs && go build -o ./tmp/
 bin = "./tmp/main"
 include_ext = ["go", "tpl", "tmpl", "html"]
 exclude_dir = ["assets", "tmp", "vendor", "docs"]
-delay = 1000
+delay = 3000
 
 [log]
 time = true

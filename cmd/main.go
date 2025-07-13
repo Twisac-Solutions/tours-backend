@@ -10,6 +10,7 @@ import (
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/garrettladley/fiberpaginate/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
@@ -31,6 +32,12 @@ func main() {
 	app := fiber.New(fiber.Config{
 		BodyLimit: 10 * 1024 * 1024, // 10MB limit
 	})
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:3000", // or your Next.js URL
+		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowCredentials: true,
+	}))
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Static("/docs", "./docs")
 	app.Use(fiberpaginate.New())

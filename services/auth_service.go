@@ -26,12 +26,19 @@ type AuthResponse struct {
 // UserResponse represents a user in API responses.
 // swagger:model
 type UserResponse struct {
-	ID             string `json:"id"`
-	Email          string `json:"email"`
-	Name           string `json:"name"`
-	Username       string `json:"username"`
-	ProfilePicture string `json:"profile_picture"`
-	Role           string `json:"role"`
+	ID             string    `json:"id"`
+	Email          string    `json:"email"`
+	Name           string    `json:"name"`
+	Username       string    `json:"username"`
+	ProfilePicture string    `json:"profile_picture"`
+	Role           string    `json:"role"`
+	Bio            string    `json:"bio"`
+	Phone          string    `json:"phone"`
+	Country        string    `json:"country"`
+	City           string    `json:"city"`
+	Language       string    `json:"language"`
+	IsVerified     bool      `json:"is_verified"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 // RegisterInput represents the expected input for user registration.
