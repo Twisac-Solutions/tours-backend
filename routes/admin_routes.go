@@ -48,7 +48,7 @@ func RegisterAdminRoutes(app *fiber.App) {
 	admin.Put("/me/password", controllers.UpdateAdminPassword)
 	admin.Get("/user/me", controllers.GetCurrentAdminProfile)
 
-	userAdmin := admin.Group("/user")
+	userAdmin := admin.Group("/users")
 	userAdmin.Get("/", controllers.GetAllUsers)
 	userAdmin.Get("/:id", controllers.GetUserByID)
 	userAdmin.Post("/", controllers.CreateUser)
