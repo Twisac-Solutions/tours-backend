@@ -20,12 +20,12 @@ func GetCurrentAdminProfile(c *fiber.Ctx) error {
 
 // GetAllUsers godoc
 // @Summary      List all users (paginated)
-// @Description  Returns paginated users, newest first
+// @Description  Returns paginated user summaries, newest first
 // @Tags         admin_users
 // @Produce      json
 // @Param        page  query int false "Page number (default 1)"
 // @Param        limit query int false "Items per page (default 10)"
-// @Success      200  {object} object{data=[]models.User,meta=object{page=int,limit=int,total=int,total_pages=int}}
+// @Success      200  {object} object{data=[]responses.UserResponse,meta=object{page=int,limit=int,total=int,total_pages=int}}
 // @Failure      500  {object} models.ErrorResponse
 // @Router       /admin/users [get]
 func GetAllUsers(c *fiber.Ctx) error {

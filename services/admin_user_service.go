@@ -3,11 +3,12 @@ package services
 import (
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/responses"
 	"github.com/garrettladley/fiberpaginate/v2"
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetAllUsers(c *fiber.Ctx) ([]models.User, int64, error) {
+func GetAllUsers(c *fiber.Ctx) ([]responses.UserResponse, int64, error) {
 	var users []models.User
 	var total int64
 
@@ -23,6 +24,14 @@ func GetAllUsers(c *fiber.Ctx) ([]models.User, int64, error) {
 		Offset(pageInfo.Start()).
 		Limit(pageInfo.Limit).
 		Find(&users).Error
+	if err != nil {
+		return nil, 0, err
+	}
 
-	return users, total, err
+	// Map DB models → response DTOs
+	out := make([]responses.UserResponse, len(users))
+	for i, u := range users {
+		out[i] = responses.ToUserResponse(u)
+	}
+	return out, total, nil
 }

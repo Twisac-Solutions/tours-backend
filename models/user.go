@@ -7,8 +7,7 @@ import (
 )
 
 type ProfileImage struct {
-	URL          string `json:"url"`
-	ThumbnailURL string `json:"thumbnailUrl"`
+	URL string `json:"url"`
 }
 
 type SocialLinks struct {
