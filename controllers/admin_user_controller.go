@@ -59,10 +59,11 @@ func GetUserByID(c *fiber.Ctx) error {
 
 /* ---------- POST /admin/user ---------- */
 type createUserRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Name     string `json:"name"  validate:"required"`
-	Password string `json:"password" validate:"required,min=6"`
-	Role     string `json:"role"  validate:"required,oneof=user admin superadmin"`
+	Email    string  `json:"email" validate:"required,email"`
+	Name     string  `json:"name"  validate:"required"`
+	Password string  `json:"password" validate:"required,min=6"`
+	Role     string  `json:"role"  validate:"required,oneof=user admin superadmin"`
+	Username *string `json:"username,omitempty"`
 }
 
 // CreateUser godoc
