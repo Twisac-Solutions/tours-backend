@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Twisac-Solutions/tours-backend/models"
-	libsql "github.com/ytsruh/gorm-libsql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -16,13 +16,11 @@ func ConnectDB() {
 	var dialector gorm.Dialector
 
 	if dsn := os.Getenv("DATABASE_URL"); dsn != "" {
-		dialector = libsql.New(libsql.Config{
-			DSN:        dsn,
-			DriverName: "libsql",
-		})
+		// production / any server
+		dialector = postgres.Open(dsn)
 	} else {
-		// Local SQLite fallback
-		dsn = os.Getenv("DB_PATH")
+		// local dev (SQLite)
+		dsn := os.Getenv("DB_PATH")
 		if dsn == "" {
 			dsn = "tour.db"
 		}
@@ -34,25 +32,15 @@ func ConnectDB() {
 	if err != nil {
 		log.Fatalf("cannot connect to database: %v", err)
 	}
-	DB.AutoMigrate(&models.User{},
+
+	if err := DB.AutoMigrate(
+		&models.User{},
 		&models.Category{},
 		&models.Destination{},
 		&models.Tour{},
 		&models.MediaDestination{},
-		&models.MediaTour{})
-	// DB.AutoMigrate(
-	// 		&models.User{},
-	// 		&models.Admin{},
-	// 		&models.Category{},
-	// 		&models.Destination{},
-	// 		&models.Event{},
-	// 		&models.Media{},
-	// 		&models.Review{},
-	// 		&models.Tag{},
-	// 		&models.Tour{},
-	// 	)
-	if err != nil {
-		log.Fatal("Failed to auto-migrate:", err)
+		&models.MediaTour{},
+	); err != nil {
+		log.Fatalf("auto-migrate failed: %v", err)
 	}
-	log.Println("Auto-migration completed successfully")
 }
