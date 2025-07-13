@@ -5,13 +5,14 @@ import (
 
 	"github.com/Twisac-Solutions/tours-backend/config"
 	"github.com/Twisac-Solutions/tours-backend/database"
-	_ "github.com/Twisac-Solutions/tours-backend/docs"
+
+	// _ "github.com/Twisac-Solutions/tours-backend/docs"
 	"github.com/Twisac-Solutions/tours-backend/routes"
 	"github.com/Twisac-Solutions/tours-backend/utils"
 	"github.com/garrettladley/fiberpaginate/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
+	// fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 // @title Tours Backend API
@@ -38,7 +39,7 @@ func main() {
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowCredentials: true,
 	}))
-	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	// app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Static("/docs", "./docs")
 	app.Use(fiberpaginate.New())
 	routes.SetupRoutes(app)
