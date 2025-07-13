@@ -19,6 +19,7 @@ func SeedSuperAdmin() {
 		ID:       utils.GenerateUUID(),
 		Name:     "Super Admin",
 		Email:    "admin@example.com",
+		Username: "superadmin",
 		Password: utils.HashPassword("admin1234"),
 		Role:     "superadmin",
 	}
