@@ -23,7 +23,7 @@ func GetAllTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
 	database.DB.Model(&models.Tour{}).Count(&totalCount)
 	// err := database.DB.Preload("Gallery").Preload("Itinerary").Find(&tours).Error
 	err := database.DB.Offset(pageInfo.Start()).
-		Limit(pageInfo.Limit).Preload("User").Preload("Destination").Preload("CoverImage").Find(&tours).Error
+		Limit(pageInfo.Limit).Preload("User").Preload("Destination").Preload("CoverImage").Order("created_at DESC").Find(&tours).Error
 	return tours, totalCount, err
 }
 
