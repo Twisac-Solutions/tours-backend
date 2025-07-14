@@ -34,7 +34,7 @@ func main() {
 		BodyLimit: 10 * 1024 * 1024, // 10MB limit
 	})
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000", // or your Next.js URL
+		AllowOrigins:     "http://localhost:3000,https://tours-dashboard-pi.vercel.app", // or your Next.js URL
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowCredentials: true,
