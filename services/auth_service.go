@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"time"
 
 	"github.com/Twisac-Solutions/tours-backend/blacklist"
@@ -11,7 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 // AuthResponse represents the response returned after authentication actions.
@@ -26,30 +27,21 @@ type AuthResponse struct {
 // UserResponse represents a user in API responses.
 // swagger:model
 type UserResponse struct {
-	ID             string    `json:"id"`
-	Email          string    `json:"email"`
-	Name           string    `json:"name"`
-	Username       string    `json:"username"`
-	ProfilePicture string    `json:"profile_picture"`
-	Role           string    `json:"role"`
-	Bio            string    `json:"bio"`
-	Phone          string    `json:"phone"`
-	Country        string    `json:"country"`
-	City           string    `json:"city"`
-	Language       string    `json:"language"`
-	IsVerified     bool      `json:"is_verified"`
-	CreatedAt      time.Time `json:"created_at"`
+	ID             string `json:"id"`
+	Email          string `json:"email"`
+	Name           string `json:"name"`
+	Username       string `json:"username"`
+	Role           string `json:"role"`
+	ProfilePicture string `json:"profile_picture,omitempty"`
 }
 
-// RegisterInput represents the expected input for user registration.
-// swagger:model
-type RegisterInput struct {
+type RegisterRequest struct {
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Password string `json:"password"`
 }
 
-type LoginInput struct {
+type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -60,35 +52,47 @@ type LoginInput struct {
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param loginInput body LoginInput true "Login Input"
+// @Param registerRequest body RegisterRequest true "Register Request"
 // @Success 201 {object} AuthResponse
 // @Failure 400 {object} AuthResponse
 // @Failure 500 {object} AuthResponse
 // @Router /api/register [post]
 func Register(c *fiber.Ctx) error {
-	var data map[string]string
-	if err := c.BodyParser(&data); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	var req RegisterRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid payload"})
 	}
 
-	hash, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
-	username := utils.GenerateUsername(data["name"])
-
-	user := models.User{
-		ID:              uuid.New(),
-		Name:            data["name"],
-		Email:           data["email"],
-		Username:        username,
-		Password:        string(hash),
-		CreatedAt:       time.Now(),
-		UpdatedAt:       time.Now(),
-		EmailVerifiedAt: time.Now(),
-		IsVerified:      true,
+	// Check email uniqueness
+	var existing models.User
+	if err := database.DB.Where("email = ?", req.Email).First(&existing).Error; err == nil {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "email already exists"})
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "db error"})
 	}
 
-	database.DB.Create(&user)
-	token, _ := utils.GenerateJWT(user.ID.String())
-	return c.JSON(fiber.Map{"token": token})
+	// Create user
+	newUser := models.User{
+		ID:         utils.GenerateUUID(),
+		Name:       req.Name,
+		Email:      req.Email,
+		Password:   utils.HashPassword(req.Password),
+		Username:   utils.GenerateUsername(req.Name),
+		Role:       "USER",
+		IsVerified: false,
+	}
+	if err := database.DB.Create(&newUser).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "could not create user"})
+	}
+
+	token, _ := utils.GenerateJWT(newUser.ID.String())
+	return c.Status(201).JSON(fiber.Map{"token": token, "user": &UserResponse{
+		ID:       newUser.ID.String(),
+		Email:    newUser.Email,
+		Name:     newUser.Name,
+		Username: newUser.Username,
+		Role:     newUser.Role,
+	}})
 }
 
 // Login godoc
@@ -97,43 +101,42 @@ func Register(c *fiber.Ctx) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param loginInput body RegisterInput true "Login Input"
+// @Param loginRequest body LoginRequest true "Login Request"
 // @Success 200 {object} AuthResponse
 // @Failure 400 {object} AuthResponse
 // @Failure 401 {object} AuthResponse
 // @Failure 500 {object} AuthResponse
 // @Router /api/login [post]
 func Login(c *fiber.Ctx) error {
-	var data map[string]string
-	if err := c.BodyParser(&data); err != nil {
+	var req LoginRequest
+	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(AuthResponse{
 			Status:  "error",
 			Message: "Invalid input",
 		})
 	}
 
-	var user models.User
-	database.DB.Where("email = ?", data["email"]).First(&user)
+	user, err := FindUserByEmail(req.Email)
 
-	if user.ID == uuid.Nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])) != nil {
+	if err != nil || !utils.CheckPasswordHash(req.Password, user.Password) {
 		return c.Status(fiber.StatusUnauthorized).JSON(AuthResponse{
 			Status:  "error",
 			Message: "Invalid credentials",
 		})
 	}
 
-	token, _ := utils.GenerateJWT(user.ID.String())
+	token, _ := utils.GenerateJWTRole(user.ID.String(), "User")
 	return c.JSON(AuthResponse{
 		Status:  "success",
 		Message: "Login successful",
 		Token:   token,
 		User: &UserResponse{
-			ID:       user.ID.String(),
-			Email:    user.Email,
-			Name:     user.Name,
-			Username: user.Username,
-			Role:     user.Role,
-			// ProfilePicture: user.ProfilePicture, // Uncomment if available in your model
+			ID:             user.ID.String(),
+			Email:          user.Email,
+			Name:           user.Name,
+			Username:       user.Username,
+			Role:           user.Role,
+			ProfilePicture: user.ProfileImage.URL,
 		},
 	})
 }
@@ -250,8 +253,8 @@ func Logout(c *fiber.Ctx) error {
 	})
 }
 
-func FindAdminByEmail(email string) (*models.User, error) {
-	var admin models.User
-	err := database.DB.First(&admin, "email = ?", email).Error
-	return &admin, err
+func FindUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := database.DB.First(&user, "email = ?", email).Error
+	return &user, err
 }
