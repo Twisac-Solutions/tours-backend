@@ -12,6 +12,7 @@ type TourResponse struct {
 	Title          string    `json:"title"`
 	CategoryID     string    `json:"categoryId"`
 	Description    string    `json:"description"`
+	About          string    `json:"about"`
 	StartDate      time.Time `json:"startDate"`
 	EndDate        time.Time `json:"endDate"`
 	PricePerPerson float64   `json:"pricePerPerson"`
@@ -38,7 +39,8 @@ func ToTourResponse(tour models.Tour) TourResponse {
 		ID:             tour.ID.String(),
 		Title:          tour.Title,
 		CategoryID:     tour.Category.String(),
-		Description:    tour.Desc,
+		Description:    tour.Description,
+		About:          tour.About,
 		StartDate:      tour.StartDate,
 		EndDate:        tour.EndDate,
 		PricePerPerson: tour.PricePerPerson,

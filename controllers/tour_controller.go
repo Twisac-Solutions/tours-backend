@@ -65,7 +65,8 @@ func GetTourByID(c *fiber.Ctx) error {
 // @Param        title          formData    string  true   "Tour title"
 // @Param        destinationId  formData    string  true   "Destination ID"
 // @Param        categoryId     formData    string  true   "Category ID"
-// @Param        desc           formData    string  true   "Tour description"
+// @Param        description           formData    string  true   "Tour description"
+// @Param        about              formData    string  true   "Tour about"
 // @Param        startDate      formData    string  true   "Start date"
 // @Param        endDate        formData    string  true   "End date"
 // @Param        pricePerPerson formData    number  true   "Price per person"
@@ -124,7 +125,8 @@ func CreateTour(c *fiber.Ctx) error {
 		DestinationID:  uuid.MustParse(req.DestinationID),
 		Destination:    *destination,
 		Category:       uuid.MustParse(req.CategoryID),
-		Desc:           req.Description,
+		Description:    req.Description,
+		About:          req.About,
 		StartDate:      req.StartDate,
 		EndDate:        req.EndDate,
 		PricePerPerson: req.PricePerPerson,
@@ -176,7 +178,8 @@ func CreateTour(c *fiber.Ctx) error {
 // @Param        title          formData    string  true   "Tour title"
 // @Param        destinationId  formData    string  true   "Destination ID"
 // @Param        categoryId     formData    string  true   "Category ID"
-// @Param        desc           formData    string  true   "Tour description"
+// @Param        description    formData    string  true   "Tour description"
+// @Param        about          formData    string  true   "Tour about"
 // @Param        startDate      formData    string  true   "Start date"
 // @Param        endDate        formData    string  true   "End date"
 // @Param        pricePerPerson formData    number  true   "Price per person"
@@ -218,7 +221,8 @@ func UpdateTour(c *fiber.Ctx) error {
 	tour.Title = req.Title
 	tour.DestinationID = uuid.MustParse(req.DestinationID)
 	tour.Category = uuid.MustParse(req.CategoryID)
-	tour.Desc = req.Description
+	tour.Description = req.Description
+	tour.About = req.About
 	tour.StartDate = req.StartDate
 	tour.EndDate = req.EndDate
 	tour.PricePerPerson = req.PricePerPerson

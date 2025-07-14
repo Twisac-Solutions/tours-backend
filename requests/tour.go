@@ -12,7 +12,8 @@ type CreateTourRequest struct {
 	Title          string                `json:"title" form:"title" required:"true"`
 	DestinationID  string                `json:"destinationId" form:"destinationId" required:"true"`
 	CategoryID     string                `json:"categoryId" form:"categoryId" required:"true"`
-	Description    string                `json:"desc" form:"desc" required:"true"`
+	Description    string                `json:"description" form:"description" required:"true"`
+	About          string                `json:"about" form:"about" required:"true"`
 	CoverImage     *multipart.FileHeader `json:"coverImage" form:"coverImage"`
 	StartDate      time.Time             `json:"startDate" form:"startDate" required:"true"`
 	EndDate        time.Time             `json:"endDate" form:"endDate" required:"true"`
@@ -25,7 +26,8 @@ type UpdateTourRequest struct {
 	Title          string                `form:"title"`
 	DestinationID  string                `form:"destinationId"`
 	CategoryID     string                `form:"categoryId"`
-	Description    string                `form:"desc"`
+	Description    string                `form:"description"`
+	About          string                `form:"about"`
 	StartDate      time.Time             `form:"startDate"`
 	EndDate        time.Time             `form:"endDate"`
 	PricePerPerson float64               `form:"pricePerPerson"`
