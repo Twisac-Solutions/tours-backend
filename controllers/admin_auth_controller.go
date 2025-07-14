@@ -42,7 +42,7 @@ func AdminLogin(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid request"})
 	}
 
-	admin, err := services.FindAdminByEmail(input.Email)
+	admin, err := services.FindUserByEmail(input.Email)
 	if err != nil || !utils.CheckPasswordHash(input.Password, admin.Password) {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
