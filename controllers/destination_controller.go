@@ -16,13 +16,13 @@ import (
 // GetAllDestinations godoc
 // @Summary      Get all destinations
 // @Description  Retrieves a list of all destinations
-// @Tags         admin_destinations
+// @Tags         destinations
 // @Produce      json
 // @Param        page   query    integer  false  "Page number (default: 1)"
 // @Param        limit  query    integer  false  "Limit per page (default: 10)"
 // @Success      200  {object}   object{data=[]responses.DestinationResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
 // @Failure      500  {object}  models.ErrorResponse
-// @Router       /admin/destinations [get]
+// @Router       /api/destinations [get]
 func GetAllDestinations(c *fiber.Ctx) error {
 	destinations, totalCount, err := services.GetAllDestinations(c)
 	if err != nil {
@@ -40,12 +40,12 @@ func GetAllDestinations(c *fiber.Ctx) error {
 // GetDestinationByID godoc
 // @Summary      Get destination by ID
 // @Description  Retrieves a destination by its ID
-// @Tags         admin_destinations
+// @Tags         destinations
 // @Produce      json
 // @Param        id   path      string  true  "Destination ID"
 // @Success      200  {object}  responses.DestinationResponse
 // @Failure      404  {object}  models.ErrorResponse
-// @Router       /admin/destinations/{id} [get]
+// @Router       /api/destinations/{id} [get]
 func GetDestinationByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	destination, err := services.GetDestinationByID(id)

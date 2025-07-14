@@ -9,11 +9,11 @@ import (
 // GetAllCategories godoc
 // @Summary      Get all categories
 // @Description  Retrieves a list of all categories
-// @Tags         admin_categories
+// @Tags         categories
 // @Produce      json
 // @Success      200  {array}   models.Category
 // @Failure      500  {object}  models.ErrorResponse
-// @Router       /admin/categories [get]
+// @Router       /api/categories [get]
 func GetAllCategories(c *fiber.Ctx) error {
 	categories, err := services.GetAllCategories()
 	if err != nil {
@@ -25,12 +25,12 @@ func GetAllCategories(c *fiber.Ctx) error {
 // GetCategoryByID godoc
 // @Summary      Get category by ID
 // @Description  Retrieves a category by its ID
-// @Tags         admin_categories
+// @Tags         categories
 // @Produce      json
 // @Param        id   path      string  true  "Category ID"
 // @Success      200  {object}  models.Category
 // @Failure      404  {object}  models.ErrorResponse
-// @Router       /admin/categories/{id} [get]
+// @Router       /api/categories/{id} [get]
 func GetCategoryByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	category, err := services.GetCategoryByID(id)

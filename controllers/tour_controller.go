@@ -16,13 +16,13 @@ import (
 // GetAllTours godoc
 // @Summary      Get all tours
 // @Description  Retrieves a list of all tours
-// @Tags         admin_tours
+// @Tags         tours
 // @Produce      json
 // @Param        page   query    integer  false  "Page number (default: 1)"
 // @Param        limit  query    integer  false  "Limit per page (default: 10)"
 // @Success      200  {object}   object{data=[]responses.TourResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
 // @Failure      500  {object}  models.ErrorResponse
-// @Router       /admin/tours [get]
+// @Router       /api/tours [get]
 func GetAllTours(c *fiber.Ctx) error {
 	tours, totalCount, err := services.GetAllTours(c)
 	if err != nil {
@@ -46,7 +46,7 @@ func GetAllTours(c *fiber.Ctx) error {
 // @Param        id   path      string  true  "Tour ID"
 // @Success      200  {object}  responses.TourResponse
 // @Failure      404  {object}  models.ErrorResponse
-// @Router       /admin/tours/{id} [get]
+// @Router       /api/tours/{id} [get]
 func GetTourByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	tour, err := services.GetTourByID(id)
