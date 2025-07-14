@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
+	"github.com/Twisac-Solutions/tours-backend/responses"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,7 +14,7 @@ func GetUserProfile(c *fiber.Ctx) error {
 	if err := database.DB.First(&user, "id = ?", userId).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
-	return c.JSON(fiber.Map{"user": &UserResponse{
+	return c.JSON(fiber.Map{"user": &responses.UserResponse{
 		ID:             user.ID.String(),
 		Email:          user.Email,
 		Name:           user.Name,
