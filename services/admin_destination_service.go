@@ -39,7 +39,37 @@ func CreateDestination(destination *models.Destination) error {
 }
 
 func UpdateDestination(id string, updated *models.Destination) error {
-	return database.DB.Model(&models.Destination{}).Where("id = ?", id).Updates(updated).Error
+	// Start a transaction
+	tx := database.DB.Begin()
+
+	// Update the destination
+	if err := tx.Model(&models.Destination{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"name":        updated.Name,
+		"description": updated.Description,
+		"region":      updated.Region,
+		"country":     updated.Country,
+	}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// If there's a new cover image, update it
+	if updated.CoverImage.URL != "" {
+		// First, delete the existing cover image
+		if err := tx.Where("destination_id = ?", id).Delete(&models.MediaDestination{}).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// Then create the new cover image
+		updated.CoverImage.DestinationID = updated.ID
+		if err := tx.Create(&updated.CoverImage).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }
 
 func DeleteDestination(id string) error {
