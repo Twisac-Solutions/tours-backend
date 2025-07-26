@@ -24,6 +24,7 @@ func main() {
 	config.InitConfig()
 	database.ConnectDB()
 	database.SeedSuperAdmin()
+	database.MigrateDB()
 
 	err := utils.InitCloudinary()
 	if err != nil {
