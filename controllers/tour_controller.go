@@ -296,3 +296,34 @@ func GetFeaturedTours(c *fiber.Ctx) error {
 
 	return c.JSON(utils.PaginationResponse(c, tourResponses, totalCount))
 }
+
+// GetFilteredTours godoc
+// @Summary      Get filtered tours
+// @Description  Retrieves tours based on various filter criteria
+// @Tags         tours
+// @Produce      json
+// @Param        page           query    integer  false  "Page number (default: 1)"
+// @Param        limit          query    integer  false  "Limit per page (default: 10)"
+// @Param        upcoming       query    boolean  false  "Filter by upcoming tours (true/false)"
+// @Param        featured       query    boolean  false  "Filter by featured tours (true/false)"
+// @Param        destination_id query    string   false  "Filter by destination ID"
+// @Param        category_id    query    string   false  "Filter by category ID"
+// @Param        min_price      query    number   false  "Filter by minimum price"
+// @Param        max_price      query    number   false  "Filter by maximum price"
+// @Success      200  {object}   object{data=[]responses.TourResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /api/tours/filter [get]
+func GetFilteredTours(c *fiber.Ctx) error {
+	tours, totalCount, err := services.GetFilteredTours(c)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve filtered tours"})
+	}
+
+	// Convert tours to response format
+	tourResponses := make([]responses.TourResponse, len(tours))
+	for i, tour := range tours {
+		tourResponses[i] = responses.ToTourResponse(tour)
+	}
+
+	return c.JSON(utils.PaginationResponse(c, tourResponses, totalCount))
+}

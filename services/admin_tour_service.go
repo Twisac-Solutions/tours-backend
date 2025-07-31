@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/Twisac-Solutions/tours-backend/database"
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/garrettladley/fiberpaginate/v2"
@@ -90,3 +92,63 @@ func GetFeaturedTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
 // 		"is_featured":      updated.IsFeatured,
 // 	}).Error
 // }
+
+// GetFilteredTours returns tours based on various filter criteria
+func GetFilteredTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
+	var tours []models.Tour
+	var totalCount int64
+
+	// Get pagination info from context
+	pageInfo, ok := fiberpaginate.FromContext(c)
+	if !ok {
+		pageInfo = &fiberpaginate.PageInfo{
+			Page:  1,
+			Limit: 10,
+		}
+	}
+
+	// Build query with filters
+	query := database.DB.Model(&models.Tour{})
+
+	// Filter by upcoming tours if requested
+	if c.Query("upcoming") == "true" {
+		query = query.Where("start_date > ?", time.Now())
+	}
+
+	// Filter by featured tours if requested
+	if c.Query("featured") == "true" {
+		query = query.Where("is_featured = ?", true)
+	}
+
+	// Filter by destination if provided
+	if destinationID := c.Query("destination_id"); destinationID != "" {
+		query = query.Where("destination_id = ?", destinationID)
+	}
+
+	// Filter by category if provided
+	if categoryID := c.Query("category_id"); categoryID != "" {
+		query = query.Where("category = ?", categoryID)
+	}
+
+	// Filter by price range if provided
+	if minPrice := c.Query("min_price"); minPrice != "" {
+		query = query.Where("price_per_person >= ?", minPrice)
+	}
+	if maxPrice := c.Query("max_price"); maxPrice != "" {
+		query = query.Where("price_per_person <= ?", maxPrice)
+	}
+
+	// Count total records matching filters
+	query.Count(&totalCount)
+
+	// Get filtered tours with pagination
+	err := query.Offset(pageInfo.Start()).
+		Limit(pageInfo.Limit).
+		Preload("User").
+		Preload("Destination").
+		Preload("CoverImage").
+		Order("created_at DESC").
+		Find(&tours).Error
+
+	return tours, totalCount, err
+}
