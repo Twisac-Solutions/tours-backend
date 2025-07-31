@@ -271,3 +271,28 @@ func DeleteTour(c *fiber.Ctx) error {
 	}
 	return c.JSON(fiber.Map{"message": "Tour deleted"})
 }
+
+// GetFeaturedTours godoc
+// @Summary      Get featured tours
+// @Description  Retrieves a list of featured tours
+// @Tags         tours
+// @Produce      json
+// @Param        page   query    integer  false  "Page number (default: 1)"
+// @Param        limit  query    integer  false  "Limit per page (default: 10)"
+// @Success      200  {object}   object{data=[]responses.TourResponse,meta=object{page=integer,limit=integer,total=integer,total_pages=integer}}
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /api/tours/featured [get]
+func GetFeaturedTours(c *fiber.Ctx) error {
+	tours, totalCount, err := services.GetFeaturedTours(c)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve featured tours"})
+	}
+
+	// Convert tours to response format
+	tourResponses := make([]responses.TourResponse, len(tours))
+	for i, tour := range tours {
+		tourResponses[i] = responses.ToTourResponse(tour)
+	}
+
+	return c.JSON(utils.PaginationResponse(c, tourResponses, totalCount))
+}

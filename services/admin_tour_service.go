@@ -44,3 +44,49 @@ func UpdateTour(id string, updated *models.Tour) error {
 func DeleteTour(id string) error {
 	return database.DB.Delete(&models.Tour{}, "id = ?", id).Error
 }
+
+// GetFeaturedTours returns tours marked as featured (paginated)
+func GetFeaturedTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
+	var tours []models.Tour
+	var totalCount int64
+
+	// Get pagination info from context
+	pageInfo, ok := fiberpaginate.FromContext(c)
+	if !ok {
+		// If pagination info is not available, use default values
+		pageInfo = &fiberpaginate.PageInfo{
+			Page:  1,
+			Limit: 10,
+		}
+	}
+
+	// Count total featured tours
+	database.DB.Model(&models.Tour{}).Where("is_featured = ?", true).Count(&totalCount)
+
+	// Get featured tours with pagination
+	err := database.DB.Where("is_featured = ?", true).
+		Offset(pageInfo.Start()).
+		Limit(pageInfo.Limit).
+		Preload("User").
+		Preload("Destination").
+		Preload("CoverImage").
+		Order("created_at DESC").
+		Find(&tours).Error
+
+	return tours, totalCount, err
+}
+
+// func UpdateTour(id string, updated *models.Tour) error {
+// 	return database.DB.Model(&models.Tour{}).Where("id = ?", id).Updates(map[string]interface{}{
+// 		"title":            updated.Title,
+// 		"destination_id":   updated.DestinationID,
+// 		"category":         updated.Category,
+// 		"description":      updated.Description,
+// 		"about":            updated.About,
+// 		"start_date":       updated.StartDate,
+// 		"end_date":         updated.EndDate,
+// 		"price_per_person": updated.PricePerPerson,
+// 		"currency":         updated.Currency,
+// 		"is_featured":      updated.IsFeatured,
+// 	}).Error
+// }
