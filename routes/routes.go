@@ -23,6 +23,8 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/tours/:id", controllers.GetTourByID)
 	api.Get("/tours/featured", controllers.GetFeaturedTours)
 	api.Get("/tours/filter", controllers.GetFilteredTours)
+	api.Get("/tours/:id/reviews", controllers.GetTourReviews)
+	api.Post("/tours/:id/reviews", middlewares.JWTProtected(), controllers.CreateTourReview)
 
 	api.Get("/destinations", controllers.GetAllDestinations)
 	api.Get("/destinations/:id", controllers.GetDestinationByID)
