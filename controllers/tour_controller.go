@@ -327,3 +327,63 @@ func GetFilteredTours(c *fiber.Ctx) error {
 
 	return c.JSON(utils.PaginationResponse(c, tourResponses, totalCount))
 }
+
+// GetTourReviews godoc
+// @Summary      Get reviews for a tour
+// @Description  Retrieves all reviews for a specific tour
+// @Tags         tours
+// @Produce      json
+// @Param        id   path      string  true  "Tour ID"
+// @Success      200  {array}   models.Review
+// @Failure      404  {object}  models.ErrorResponse
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /api/tours/{id}/reviews [get]
+func GetTourReviews(c *fiber.Ctx) error {
+	tourID := c.Params("id")
+	reviews, err := services.GetTourReviews(tourID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve reviews"})
+	}
+	return c.JSON(reviews)
+}
+
+// CreateTourReview godoc
+// @Summary      Create a review for a tour
+// @Description  Creates a new review for a tour
+// @Tags         tours
+// @Accept       json
+// @Produce      json
+// @Param        id      path      string          true  "Tour ID"
+// @Param        review  body      models.Review  true  "Review object"
+// @Success      200     {object}  models.Review
+// @Failure      400     {object}  models.ErrorResponse
+// @Failure      500     {object}  models.ErrorResponse
+// @Router       /api/tours/{id}/reviews [post]
+func CreateTourReview(c *fiber.Ctx) error {
+	tourID := c.Params("id")
+
+	var review models.Review
+	if err := c.BodyParser(&review); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	// Validate rating
+	if review.Rating < 1 || review.Rating > 5 {
+		return c.Status(400).JSON(fiber.Map{"error": "Rating must be between 1 and 5"})
+	}
+
+	// Get user ID from context
+	userID, ok := c.Locals("userID").(string)
+	if !ok {
+		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	review.TourID = uuid.MustParse(tourID)
+	review.UserID = uuid.MustParse(userID)
+
+	if err := services.CreateTourReview(&review); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to create review"})
+	}
+
+	return c.JSON(review)
+}
