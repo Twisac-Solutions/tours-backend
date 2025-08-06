@@ -7,6 +7,7 @@ import (
 	"github.com/Twisac-Solutions/tours-backend/models"
 	"github.com/garrettladley/fiberpaginate/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func GetAllTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
@@ -151,4 +152,59 @@ func GetFilteredTours(c *fiber.Ctx) ([]models.Tour, int64, error) {
 		Find(&tours).Error
 
 	return tours, totalCount, err
+}
+
+// UpdateTourRating calculates and updates the average rating and review count for a tour
+func UpdateTourRating(tourID uuid.UUID) error {
+	var result struct {
+		AverageRating float64
+		ReviewCount   int64
+	}
+
+	// Calculate average rating and count from reviews
+	err := database.DB.Model(&models.Review{}).
+		Select("AVG(rating) as average_rating, COUNT(*) as review_count").
+		Where("tour_id = ?", tourID).
+		Scan(&result).Error
+
+	if err != nil {
+		return err
+	}
+
+	// Update the tour with the new rating information
+	return database.DB.Model(&models.Tour{}).
+		Where("id = ?", tourID).
+		Updates(map[string]interface{}{
+			"average_rating": result.AverageRating,
+			"review_count":   result.ReviewCount,
+		}).Error
+}
+
+// CreateTourWithReview creates a tour and optionally adds a review
+func CreateTourWithReview(tour *models.Tour, review *models.Review) error {
+	// Start a transaction
+	tx := database.DB.Begin()
+
+	// Create the tour
+	if err := tx.Create(tour).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// If review is provided, create it
+	if review != nil {
+		review.TourID = tour.ID
+		if err := tx.Create(review).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// Update tour rating
+		if err := UpdateTourRating(tour.ID); err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }
