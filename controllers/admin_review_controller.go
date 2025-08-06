@@ -42,7 +42,7 @@ func GetReviewByID(c *fiber.Ctx) error {
 
 // CreateReview godoc
 // @Summary      Create a new review
-// @Description  Creates a new review
+// @Description  Creates a new review for a tour
 // @Tags         admin_reviews
 // @Accept       json
 // @Produce      json
@@ -56,7 +56,13 @@ func CreateReview(c *fiber.Ctx) error {
 	if err := c.BodyParser(&review); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
 	}
-	if err := services.CreateReview(&review); err != nil {
+
+	// Validate rating
+	if review.Rating < 1 || review.Rating > 5 {
+		return c.Status(400).JSON(fiber.Map{"error": "Rating must be between 1 and 5"})
+	}
+
+	if err := services.CreateTourReview(&review); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create review"})
 	}
 	return c.JSON(review)
@@ -80,7 +86,13 @@ func UpdateReview(c *fiber.Ctx) error {
 	if err := c.BodyParser(&updated); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
 	}
-	if err := services.UpdateReview(id, &updated); err != nil {
+
+	// Validate rating
+	if updated.Rating < 1 || updated.Rating > 5 {
+		return c.Status(400).JSON(fiber.Map{"error": "Rating must be between 1 and 5"})
+	}
+
+	if err := services.UpdateTourReview(id, &updated); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update review"})
 	}
 	return c.JSON(updated)
@@ -97,7 +109,7 @@ func UpdateReview(c *fiber.Ctx) error {
 // @Router       /admin/reviews/{id} [delete]
 func DeleteReview(c *fiber.Ctx) error {
 	id := c.Params("id")
-	if err := services.DeleteReview(id); err != nil {
+	if err := services.DeleteTourReview(id); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete review"})
 	}
 	return c.JSON(fiber.Map{"message": "Review deleted"})
