@@ -20,6 +20,8 @@ type Tour struct {
 	EndDate        time.Time `json:"endDate"`
 	PricePerPerson float64   `json:"pricePerPerson"`
 	Currency       string    `json:"currency"`
+	AverageRating  float64   `gorm:"type:decimal(3,2);default:0.00" json:"averageRating"`
+	ReviewCount    int       `gorm:"default:0" json:"reviewCount"`
 	// GroupSize      int       `json:"groupSize"`
 	// Availability   bool       `json:"availability"`
 	IsFeatured bool `json:"isFeatured"`
