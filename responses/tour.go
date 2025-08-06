@@ -18,8 +18,13 @@ type TourResponse struct {
 	PricePerPerson float64   `json:"pricePerPerson"`
 	Currency       string    `json:"currency"`
 	IsFeatured     bool      `json:"isFeatured"`
-	CoverImage     string    `json:"coverImage"`
-	Destination    struct {
+
+	// Rating fields
+	AverageRating float64 `json:"averageRating"`
+	ReviewCount   int     `json:"reviewCount"`
+
+	CoverImage  string `json:"coverImage"`
+	Destination struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 	} `json:"destination"`
@@ -46,6 +51,8 @@ func ToTourResponse(tour models.Tour) TourResponse {
 		PricePerPerson: tour.PricePerPerson,
 		Currency:       tour.Currency,
 		IsFeatured:     tour.IsFeatured,
+		AverageRating:  tour.AverageRating,
+		ReviewCount:    tour.ReviewCount,
 		CreatedAt:      tour.CreatedAt,
 		UpdatedAt:      tour.UpdatedAt,
 	}
@@ -61,7 +68,7 @@ func ToTourResponse(tour models.Tour) TourResponse {
 	response.User.ID = tour.User.ID.String()
 	response.User.Name = tour.User.Name
 	response.User.Username = tour.User.Username
-	response.User.ProfileImage = "" // Set according to your User model structure
+	response.User.ProfileImage = tour.User.ProfileImage.URL
 	response.User.Role = tour.User.Role
 
 	return response
