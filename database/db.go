@@ -38,6 +38,7 @@ func ConnectDB() {
 		&models.Category{},
 		&models.Destination{},
 		&models.Tour{},
+		&models.Review{},
 		&models.MediaDestination{},
 		&models.MediaTour{},
 	); err != nil {
